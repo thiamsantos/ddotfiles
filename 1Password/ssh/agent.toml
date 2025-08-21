@@ -1,0 +1,11 @@
+# My GitHub SSH key for my Personal account
+[[ssh-keys]]
+item = "Github MacOS - Remote"
+vault = "Personal"
+account = "Thiago Santos"
+
+# Shared Gitlab for my Work Account
+[[ssh-keys]]
+item = "Gitlab MacOS - Remote"
+vault = "Personal"
+account = "Thiago Santos"
