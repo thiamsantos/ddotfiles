@@ -15,6 +15,7 @@ mkdir -p "$HOME/.config/1Password"
 mkdir -p "$HOME/.vim/swap"
 mkdir -p "$HOME/.config/nvim"
 mkdir -p "$HOME/.ssh"
+mkdir -p "$HOME/.config/mise"
 
 if [[ $(command -v brew) == "" ]]; then
     echo "Installing Hombrew"
@@ -34,9 +35,9 @@ stow --verbose --target="$HOME/.ssh" ssh
 stow --verbose --target="$HOME/.config/1Password" 1Password
 stow --verbose --target="$HOME/.config/alacritty" alacritty
 stow --verbose --target="$HOME/.config/nvim" nvim
+stow --verbose --target="$HOME/.config/mise" mise
 ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose "$HOME/.docker/cli-plugins/docker-compose"
 ln -sfn /opt/homebrew/opt/docker-buildx/bin/docker-buildx "$HOME/.docker/cli-plugins/docker-buildx"
-
 
 git lfs install
 
@@ -51,34 +52,4 @@ else
     echo "Shell setted to (homebrew) fish successefully!"
 fi
 
-/opt/homebrew/bin/fish -c "fisher install PatrickF1/fzf.fish"
-
-# Configuring Mise
-if [[ "$(command -v node)" != *"mise"* ]]; then
-    echo "Installing nodejs..."
-    mise install nodejs@22.14.0
-    mise use --global nodejs@22.14.0
-fi
-
-if [[ "$(command -v yarn)" != *"mise"* ]]; then
-    echo "Installing yarn..."
-    mise install yarn@1.22.19
-    mise use --global yarn@1.22.19
-fi
-
-if [[ "$(command -v erl)" != *"mise"* ]]; then
-    echo "Installing erlang..."
-    mise plugin install yarn
-    mise install erlang@27.3.3
-    mise use --global erlang@27.3.3
-fi
-
-if [[ "$(command -v elixir)" != *"mise"* ]]; then
-    echo "Installing elixir..."
-    mise install elixir@1.18.3-otp-27
-    mise use --global elixir@1.18.3-otp-27
-fi
-
-mise plugin add kubectl
-mise use --global kubectl@latest
-
+mise install

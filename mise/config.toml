@@ -1,0 +1,8 @@
+[tools]
+elixir = "1.18.3-otp-27"
+erlang = "27.3.3"
+kubectl = "latest"
+yarn = "1.22.19"
+node = "lts"
+python = "3.12"
+remotectl = "latest"
