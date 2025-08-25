@@ -10,3 +10,4 @@ direnv hook fish | source
 fish_config theme choose "dracula"
 
 bind \cb backward-word
+bind \cr search_history
