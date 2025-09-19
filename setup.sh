@@ -27,9 +27,8 @@ else
 fi
 
 brew bundle
-eval "$(/opt/homebrew/bin/brew shellenv)"
 
-stow --verbose --target=$HOME git vim aerospace
+stow --verbose --target=$HOME git aerospace
 stow --verbose --target="$HOME/.config/fish" fish
 stow --verbose --target="$HOME/.ssh" ssh
 stow --verbose --target="$HOME/.config/1Password" 1Password
@@ -53,3 +52,5 @@ else
 fi
 
 mise install
+
+# curl https://cursor.com/install -fsS | bash

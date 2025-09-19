@@ -3,3 +3,5 @@
 *.log
 tmp/
 .envrc
+lefthook-local.yml
+lefthook.yml
