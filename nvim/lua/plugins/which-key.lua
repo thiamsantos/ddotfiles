@@ -8,11 +8,12 @@ return { -- Useful plugin to show you pending keybinds.
     -- Document existing key chains
     spec = {
       { '<leader>b', group = '+buffer' },
-      { '<leader>t', group = '+tab' },
       { '<leader>f', group = '+file' },
+      { '<leader>g', group = '+git' },
       { '<leader>m', group = '+local leader' },
       { '<leader>mt', group = '+tests' },
-      { '<leader>g', group = '+git' },
+      { '<leader>s', group = '+search' },
+      { '<leader>t', group = '+tab' },
       { '<leader>w', group = '+window' },
     },
   },
@@ -47,6 +48,7 @@ return { -- Useful plugin to show you pending keybinds.
 
     -- Buffer keybinds
     vim.keymap.set('n', '<leader>bk', ':bdelete<CR>', { desc = 'Buffer Kill' })
+    vim.keymap.set('n', '<leader>bn', ':vnew<CR>', { desc = 'New Buffer' })
 
     -- Tab keybinds
     vim.keymap.set('n', '<leader>tt', ':tabnew<CR>', { desc = 'New tab' })

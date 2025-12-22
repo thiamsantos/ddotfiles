@@ -96,10 +96,23 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 vim.api.nvim_create_autocmd('ColorScheme', {
   group = vim.api.nvim_create_augroup('CustomNeogitDiff', { clear = true }),
   callback = function()
-    -- Define your background colors using hex codes
-    vim.api.nvim_set_hl(0, 'NeogitDiffAdd', { fg = '#50FA7B', bg = '#3A6B4C' })
-    vim.api.nvim_set_hl(0, 'NeogitDiffAddHighlight', { fg = '#50FA7B', bg = '#3A6B4C' })
-    vim.api.nvim_set_hl(0, 'NeogitDiffAddCursor', { fg = '#69FF94', bg = '#282A36' })
+    local colors = require('dracula').colors()
+    local groups = {
+      NeogitDiffAdd = { fg = colors.bright_green, bg = colors.menu },
+      NeogitDiffDelete = { fg = colors.bright_red, bg = colors.menu },
+      NeogitDiffContext = { fg = colors.comment, bg = colors.visual },
+
+      NeogitDiffAddHighlight = { fg = colors.green, bg = colors.bg },
+      NeogitDiffDeleteHighlight = { fg = colors.red, bg = colors.bg },
+      NeogitDiffContextHighlight = { fg = colors.comment, bg = colors.visual },
+
+      NeogitDiffAddCursor = { fg = colors.green, bg = colors.selection },
+      NeogitDiffDeleteCursor = { fg = colors.red, bg = colors.selection },
+      NeogitDiffContextCursor = { fg = colors.comment, bg = colors.selection },
+    }
+    for group, setting in pairs(groups) do
+      vim.api.nvim_set_hl(0, group, setting)
+    end
   end,
 })
 
@@ -163,9 +176,10 @@ require('lazy').setup {
     config = function()
       vim.g['test#strategy'] = 'neovim_sticky'
       vim.g['test#neovim#term_position'] = 'vert'
+      vim.g['test#neovim_sticky#reopen_window'] = 1
 
-      vim.keymap.set('n', '<leader>mtv', ':TestFile<CR>', { desc = 'Run tests for the current file' })
-      vim.keymap.set('n', '<leader>mts', ':TestNearest<CR>', { desc = 'Run the nearest test' })
+      vim.keymap.set('n', '<leader>mtv', ':w | TestFile<CR>', { desc = 'Run tests for the current file' })
+      vim.keymap.set('n', '<leader>mts', ':w | TestNearest<CR>', { desc = 'Run the nearest test' })
       vim.keymap.set('n', '<leader>mta', ':TestSuite<CR>', { desc = 'Run all tests' })
       vim.keymap.set('n', '<leader>mtr', ':TestLast<CR>', { desc = 'Re-run the last test' })
     end,

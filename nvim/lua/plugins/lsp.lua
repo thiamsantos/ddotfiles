@@ -56,6 +56,12 @@ return {
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
+        --
+        expert = {
+          cmd = { 'expert', '--stdio' },
+          root_markers = { 'mix.exs', '.git' },
+          filetypes = { 'elixir', 'eelixir', 'heex' },
+        },
         rust_analyzer = {},
         dockerls = {},
         fish_lsp = {},
@@ -68,9 +74,6 @@ return {
         jsonls = {},
         marksman = {},
         sqlls = {},
-        lexical = {
-          cmd = { vim.fn.expand '/Users/thiago.santos/dev/thiamsantos/lexical/_build/dev/package/lexical/bin/start_lexical.sh' },
-        },
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },

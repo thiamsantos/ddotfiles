@@ -1,5 +1,5 @@
 [tools]
-elixir = "1.18.3-otp-27"
+elixir = "1.19.4-otp-27"
 erlang = "27.3.3"
 kubectl = "latest"
 yarn = "1.22.19"
@@ -9,3 +9,7 @@ remotectl = "latest"
 lua = "5.1"
 rust = "latest"
 go = "latest"
+pandoc = "latest"
+
+[settings]
+experimental = true

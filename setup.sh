@@ -10,7 +10,7 @@ mkdir -p "$HOME/dev/thiamsantos"
 mkdir -p "$HOME/dev/remote"
 mkdir -p "$HOME/.docker/cli-plugins"
 mkdir -p "$HOME/.config/fish"
-mkdir -p "$HOME/.config/alacritty"
+mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/1Password"
 mkdir -p "$HOME/.vim/swap"
 mkdir -p "$HOME/.config/nvim"
@@ -26,13 +26,14 @@ else
     brew update
 fi
 
+brew upgrade
 brew bundle
 
 stow --verbose --target=$HOME git aerospace
 stow --verbose --target="$HOME/.config/fish" fish
+stow --verbose --target="$HOME/.config/ghostty" ghostty
 stow --verbose --target="$HOME/.ssh" ssh
 stow --verbose --target="$HOME/.config/1Password" 1Password
-stow --verbose --target="$HOME/.config/alacritty" alacritty
 stow --verbose --target="$HOME/.config/nvim" nvim
 stow --verbose --target="$HOME/.config/mise" mise
 ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose "$HOME/.docker/cli-plugins/docker-compose"
@@ -52,5 +53,8 @@ else
 fi
 
 mise install
+
+gh release download nightly --pattern 'expert_darwin_arm64' --repo elixir-lang/expert --skip-existing --output $HOME/bin/expert
+chmod +x $HOME/bin/expert
 
 # curl https://cursor.com/install -fsS | bash

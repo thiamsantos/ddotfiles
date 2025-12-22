@@ -42,7 +42,7 @@ return {
           find_files = {
             hidden = true,
           },
-          bugffers = {
+          buffers = {
             sort_mru = true,
           },
         },
@@ -72,6 +72,23 @@ return {
           previewer = false,
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
+
+      vim.keymap.set('n', '<leader>s.', function()
+        local current_file = vim.api.nvim_buf_get_name(0)
+
+        -- :p - make it a full path
+        -- :h - get the head (directory) of the path
+        local current_dir = vim.fn.fnamemodify(current_file, ':p:h')
+
+        if current_dir == '' then
+          current_dir = vim.fn.getcwd()
+        end
+
+        builtin.live_grep {
+          search_dirs = { current_dir },
+          prompt_title = 'LIVE GREP: ' .. current_dir,
+        }
+      end, { desc = 'Live grep in current buffer dir' })
     end,
   },
   {

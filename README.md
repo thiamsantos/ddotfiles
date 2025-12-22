@@ -6,7 +6,6 @@ Personal dotfiles and development environment configuration for macOS. This repo
 
 - **Shell**: Fish shell with custom aliases and functions
 - **Editor**: Neovim with LSP support and modern plugins
-- **Terminal**: Alacritty with Dracula theme and vi-mode
 - **Package Management**: Homebrew with Brewfile for easy setup
 - **Version Management**: Mise for Node.js, Erlang, Elixir, and other tools
 - **Git**: Optimized configuration with delta for better diffs
@@ -51,7 +50,6 @@ The setup script will:
 dotfiles/
 ├── 1Password/          # 1Password SSH agent configuration
 ├── aerospace/          # Window management configuration
-├── alacritty/         # Terminal emulator configuration
 ├── fish/              # Fish shell configuration and functions
 ├── git/               # Git configuration files
 ├── nvim/              # Neovim configuration and plugins
