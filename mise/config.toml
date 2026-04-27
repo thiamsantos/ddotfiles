@@ -5,11 +5,13 @@ kubectl = "latest"
 yarn = "1.22.19"
 node = "lts"
 python = "3.12"
-remotectl = "latest"
+remotectl = "4.13.1"
 lua = "5.1"
 rust = "latest"
 go = "latest"
 pandoc = "latest"
+dexter = "latest"
+gitu = "latest"
 
 [settings]
 experimental = true

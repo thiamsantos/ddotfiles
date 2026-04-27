@@ -5,3 +5,4 @@ tmp/
 .envrc
 lefthook-local.yml
 lefthook.yml
+.dexter.db*

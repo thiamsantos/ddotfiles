@@ -13,7 +13,7 @@ direnv hook fish | source
 zoxide init --cmd=cd fish | source
 mise activate --shims fish | source
 
-fish_config theme choose "dracula"
+fish_config theme choose "Dracula"
 
 bind \cf forward-word
 bind \cb backward-word

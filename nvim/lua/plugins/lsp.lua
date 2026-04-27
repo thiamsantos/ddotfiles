@@ -57,11 +57,6 @@ return {
       local servers = {
         -- See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
-        expert = {
-          cmd = { 'expert', '--stdio' },
-          root_markers = { 'mix.exs', '.git' },
-          filetypes = { 'elixir', 'eelixir', 'heex' },
-        },
         rust_analyzer = {},
         dockerls = {},
         fish_lsp = {},

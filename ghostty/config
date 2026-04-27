@@ -1,1 +1,5 @@
 theme = Dracula
+font-size = 16
+font-family = "SF Mono"
+quit-after-last-window-closed = true
+confirm-close-surface = false

@@ -86,7 +86,7 @@ automatically-unhide-macos-hidden-apps = true
     # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#exec-and-forget
-    ctrl-alt-cmd-enter = 'exec-and-forget open -n -a Alacritty'
+    ctrl-alt-cmd-enter = 'exec-and-forget open -n -a Ghostty'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
     ctrl-alt-cmd-slash = 'layout tiles horizontal vertical'

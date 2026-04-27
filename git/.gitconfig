@@ -9,7 +9,7 @@
   excludesFile = "~/.globalgitignore"
 
 [push]
-  autoSetupRemote = true
+	autoSetupRemote = true
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -22,3 +22,5 @@
 
 [includeIf "gitdir:~/dev/remote/"]
     path = ~/.gitconfig-work
+[http]
+	postBuffer = 157286400
