@@ -29,7 +29,7 @@ fi
 brew upgrade
 brew bundle
 
-stow --verbose --target=$HOME git aerospace
+stow --verbose --target=$HOME git aerospace tmux
 stow --verbose --target="$HOME/.config/fish" fish
 stow --verbose --target="$HOME/.config/ghostty" ghostty
 stow --verbose --target="$HOME/.ssh" ssh
@@ -53,6 +53,11 @@ else
 fi
 
 mise install
+
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "Installing TPM..."
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+fi
 
 gh release download nightly --pattern 'expert_darwin_arm64' --repo elixir-lang/expert --skip-existing --output $HOME/bin/expert
 
