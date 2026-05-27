@@ -5,3 +5,6 @@ quit-after-last-window-closed = true
 confirm-close-surface = false
 # Unbind select_all so Cmd+a is available for other uses (e.g. hyper key combos).
 keybind = super+a=unbind
+# Hyper+a (Ctrl+Cmd+Alt+a) forwards C-a (\x01) to tmux as the prefix key.
+# Terminals can't pass Cmd to tmux directly, so Ghostty translates it here.
+keybind = ctrl+super+alt+a=text:\x01
