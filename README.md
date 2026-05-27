@@ -11,6 +11,7 @@ Personal dotfiles and development environment configuration for macOS. This repo
 - **Git**: Optimized configuration with delta for better diffs
 - **SSH**: 1Password SSH agent integration
 - **Window Management**: Aerospace for tiling window management
+- **Terminal Multiplexer**: tmux with session persistence, Dracula theme, and vim-style keybindings
 
 ## 🚀 Quick Start
 
@@ -136,6 +137,51 @@ dotfiles/
 - Colima integration for Docker
 - 1Password SSH agent
 - Host-specific configurations
+
+## 📟 tmux
+
+Prefix key: `C-a` (Ctrl+a)
+
+### Session & TPM
+
+| Key | Action |
+|---|---|
+| `C-a I` | Install plugins (TPM) |
+| `C-a U` | Update plugins (TPM) |
+| `C-a C-s` | Save session (resurrect) |
+| `C-a C-r` | Restore session (resurrect) |
+| `C-a F` | Fuzzy find windows/sessions/panes (tmux-fzf) |
+
+### Windows & Panes
+
+| Key | Action |
+|---|---|
+| `C-a \|` | Split pane horizontally (right) |
+| `C-a -` | Split pane vertically (below) |
+| `C-a h/j/k/l` | Navigate panes (vim-style) |
+| `C-a H/J/K/L` | Resize panes (vim-style, repeatable) |
+| `C-a z` | Zoom/unzoom pane |
+| `C-a w` | Display pane numbers |
+| `C-a b` | Previous window |
+| `C-a q` | Kill pane |
+| `C-a Q` | Kill window |
+| `C-a X` | Kill session (with confirmation) |
+
+### Copy Mode
+
+| Key | Action |
+|---|---|
+| `C-a Escape` | Enter copy mode |
+| `v` | Begin selection |
+| `y` | Copy selection to macOS clipboard |
+| `C-a p` | Paste buffer |
+
+### Other
+
+| Key | Action |
+|---|---|
+| `C-a r` | Reload tmux config |
+| `C-a C-a` | Send `C-a` to inner app (nested tmux, etc.) |
 
 ## 🎯 Window Management
 
