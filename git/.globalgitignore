@@ -1,4 +1,5 @@
 .DS_Store
+.kasa.yml
 .idea
 *.log
 tmp/
@@ -6,3 +7,4 @@ tmp/
 lefthook-local.yml
 lefthook.yml
 .dexter.db*
+mise.local.toml

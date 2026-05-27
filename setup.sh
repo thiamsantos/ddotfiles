@@ -55,6 +55,6 @@ fi
 mise install
 
 gh release download nightly --pattern 'expert_darwin_arm64' --repo elixir-lang/expert --skip-existing --output $HOME/bin/expert
-chmod +x $HOME/bin/expert
 
+# https://github.com/remoteoss/dexter
 # curl https://cursor.com/install -fsS | bash

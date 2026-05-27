@@ -118,6 +118,20 @@ return {
           end,
         },
       }
+
+      -- dexter is installed via mise/asdf/brew (not Mason), so register it manually
+      local lspconfig = require 'lspconfig'
+      local configs = require 'lspconfig.configs'
+      if not configs.dexter then
+        configs.dexter = {
+          default_config = {
+            cmd = { 'dexter', 'lsp' },
+            filetypes = { 'elixir', 'eelixir', 'heex' },
+            root_dir = lspconfig.util.root_pattern('.dexter/dexter.db', '.dexter.db', 'mix.exs', '.git'),
+          },
+        }
+      end
+      lspconfig.dexter.setup { capabilities = capabilities }
     end,
   },
 }

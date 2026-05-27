@@ -18,7 +18,10 @@
 	required = true
 
 [includeIf "gitdir:~/dev/thiamsantos/"]
-    path = ~/.gitconfig-personal
+  path = ~/.gitconfig-personal
+
+[includeIf "gitdir:~/dev/dotfiles/"]
+  path = ~/.gitconfig-personal
 
 [includeIf "gitdir:~/dev/remote/"]
     path = ~/.gitconfig-work
