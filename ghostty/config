@@ -3,4 +3,6 @@ font-size = 16
 font-family = "SF Mono"
 quit-after-last-window-closed = true
 confirm-close-surface = false
+# Hyper+a (Cmd+Ctrl+Alt+a) forwards C-a (\x01) to tmux as the prefix key.
+# Terminals can't pass Cmd to tmux directly, so Ghostty translates it here.
 keybind = cmd+ctrl+alt+a=text:\x01
