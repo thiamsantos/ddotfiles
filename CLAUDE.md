@@ -41,6 +41,8 @@ stow --verbose --target="$HOME/.config/nvim" nvim
 | `1Password/` | `$HOME/.config/1Password` |
 | `nvim/` | `$HOME/.config/nvim` |
 | `mise/` | `$HOME/.config/mise` |
+| `zellij/` | `$HOME/.config/zellij` |
+| `cmux/` | `$HOME/.config/cmux` |
 
 ## Neovim Architecture
 

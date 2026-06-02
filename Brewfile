@@ -1,3 +1,5 @@
+tap "manaflow-ai/cmux"
+
 brew "autoconf"
 brew "awscli"
 brew "cloc"
@@ -57,9 +59,11 @@ brew "weasyprint"
 brew "wget"
 brew "wxwidgets"
 brew "zlib"
+brew "zellij"
 brew "zoxide"
 
 cask "1password-cli"
+cask "cmux"
 cask "cursor"
 cask "font-fira-code"
 cask "font-hack-nerd-font"

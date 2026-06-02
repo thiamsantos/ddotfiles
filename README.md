@@ -140,7 +140,7 @@ dotfiles/
 
 ## 📟 tmux
 
-Prefix key: `C-a` (Ctrl+a)
+Prefix key: `C-a` (Cmd+a)
 
 ### Session & TPM
 
