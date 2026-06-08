@@ -13,10 +13,16 @@
 **Testing approach:** There is no Lua unit-test harness in this repo. Each task is verified by launching Neovim headless and asserting that the config loads cleanly and the expected plugin/keymap/server is present. The canonical smoke test is:
 
 ```bash
-nvim --headless "+lua vim.defer_fn(function() print('LOADED_OK') vim.cmd('qa') end, 200)"
+nvim --headless "+doautocmd User VeryLazy" "+lua print('LOADED_OK')" "+qa"
 ```
 
-A clean load prints `LOADED_OK` with no error lines. Because lazy.nvim installs plugins on first launch, the **first** real launch after Task 2 must be interactive (`nvim`) to let plugins install; headless checks come after.
+A clean load prints `LOADED_OK` with no error lines.
+
+**Two headless gotchas these tests work around:**
+- **`VeryLazy` does not fire in `--headless`** (it is scheduled after `UIEnter`, which headless lacks). Anything LazyVim loads on `VeryLazy` — `config/keymaps.lua`, `config/autocmds.lua`, and lazily-loaded plugin setup — will appear MISSING unless you fire it manually with `"+doautocmd User VeryLazy"` first. (Plugin `keys = {...}` bindings register at startup, so they don't need this; `vim.keymap.set` calls in `config/keymaps.lua` do.)
+- **`vim.defer_fn` is unreliable headless** — prefer synchronous `+lua ...` commands followed by `+qa` over deferring then quitting from inside the callback.
+
+Because lazy.nvim installs plugins on first launch, the **first** real launch after Task 2 must let plugins install (`nvim --headless "+Lazy! sync" +qa`, or an interactive `nvim`); the assertion checks come after.
 
 ---
 
@@ -533,17 +539,21 @@ end, { desc = "Yank project file path to clipboard" })
 
 - [ ] **Step 4: Headless test — options applied and keymaps exist**
 
+`options.lua` loads before lazy startup, but `keymaps.lua` and `autocmds.lua` load on LazyVim's `VeryLazy` event — and **`VeryLazy` does not fire in `--headless` mode** (it is scheduled after `UIEnter`, which headless lacks). So fire it explicitly with `+"doautocmd User VeryLazy"` before checking, and do the checks synchronously (no `vim.defer_fn`, which is also unreliable headless).
+
 Run:
 ```bash
-nvim --headless "+lua vim.defer_fn(function() print('SO='..vim.o.scrolloff) print('NF='..tostring(vim.g.have_nerd_font)) print('FY='..(vim.fn.maparg(' fy','n') ~= '' and 'ok' or 'MISSING')) print('FYY='..(vim.fn.maparg(' fY','n') ~= '' and 'ok' or 'MISSING')) vim.cmd('qa') end, 800)" 2>&1 | tail -6
+nvim --headless "+doautocmd User VeryLazy" "+lua print('SO='..vim.o.scrolloff) print('NF='..tostring(vim.g.have_nerd_font)) print('FY='..(vim.fn.maparg(' fy','n') ~= '' and 'ok' or 'MISSING')) print('FYY='..(vim.fn.maparg(' fY','n') ~= '' and 'ok' or 'MISSING'))" "+qa" 2>&1 | tail -6
 ```
 Expected: `SO=10`, `NF=true`, `FY=ok`, `FYY=ok`.
 
 - [ ] **Step 5: Functional test — parent-dir autocmd**
 
+The autocmd is registered on `VeryLazy`, so fire it first (same reason as Step 4).
+
 Run:
 ```bash
-nvim --headless "+lua vim.defer_fn(function() local p='/tmp/lazyvim_autodir_test/sub/file.txt' vim.cmd('edit '..p) vim.cmd('write') print('EXISTS='..tostring(vim.fn.filereadable(p)==1)) vim.cmd('qa') end, 600)" 2>&1 | tail -3
+nvim --headless "+doautocmd User VeryLazy" "+lua local p='/tmp/lazyvim_autodir_test/sub/file.txt' vim.cmd('edit '..p) vim.cmd('write') print('EXISTS='..tostring(vim.fn.filereadable(p)==1))" "+qa!" 2>&1 | tail -3
 rm -rf /tmp/lazyvim_autodir_test
 ```
 Expected: `EXISTS=true`
@@ -744,9 +754,11 @@ git commit -m "docs: rewrite Neovim Architecture section for LazyVim"
 
 - [ ] **Step 1: Full headless smoke test**
 
+Fire `VeryLazy` and check synchronously (`vim.defer_fn` is unreliable in `--headless`; `VeryLazy` does not fire on its own without a UI).
+
 Run:
 ```bash
-nvim --headless "+lua vim.defer_fn(function() print('LOADED_OK') vim.cmd('qa') end, 1000)" 2>&1 | tail -10
+nvim --headless "+doautocmd User VeryLazy" "+lua print('LOADED_OK')" "+qa" 2>&1 | tail -10
 ```
 Expected: `LOADED_OK`, zero error/warning lines.
 
@@ -756,9 +768,11 @@ Launch `nvim`, run `:checkhealth lazy`. Expected: no errors. Run `:Lazy` and con
 
 - [ ] **Step 3: All custom keymaps present in one pass**
 
+Each lhs is built as a full literal string (`<leader>` = a leading space), so `<leader><leader>` is exactly two spaces — do NOT prefix another space in the loop (that was an off-by-one in an earlier draft). Fire `VeryLazy` first so the `config/keymaps.lua` bindings are registered.
+
 Run:
 ```bash
-nvim --headless "+lua vim.defer_fn(function() local keys={'  ','ff','s.','fy','fY','gg','mtv','mts','mta','mtr','mtt','mtT','wo'} local missing={} for _,k in ipairs(keys) do if vim.fn.maparg(' '..k,'n')=='' then table.insert(missing,k) end end print(#missing==0 and 'ALL_KEYS_OK' or ('MISSING: '..table.concat(missing,','))) vim.cmd('qa') end, 1000)" 2>&1 | tail -3
+nvim --headless "+doautocmd User VeryLazy" "+lua local keys={['ldr-ldr']='  ',ff=' ff',['s.']=' s.',fy=' fy',fY=' fY',gg=' gg',mtv=' mtv',mts=' mts',mta=' mta',mtr=' mtr',mtt=' mtt',mtT=' mtT',wo=' wo'} local missing={} for n,lhs in pairs(keys) do if vim.fn.maparg(lhs,'n')=='' then missing[#missing+1]=n end end print(#missing==0 and 'ALL_KEYS_OK' or ('MISSING: '..table.concat(missing,','))) " "+qa" 2>&1 | tail -3
 ```
 Expected: `ALL_KEYS_OK`
 
