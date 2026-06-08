@@ -27,3 +27,5 @@
     path = ~/.gitconfig-work
 [http]
 	postBuffer = 157286400
+[gpg "ssh"]
+	allowedSignersFile = /Users/thiago.santos/.config/git/allowed_signers
