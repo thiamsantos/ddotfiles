@@ -31,4 +31,13 @@ return {
       },
     },
   },
+  {
+    -- Don't auto-open a file-explorer side panel. By default snacks replaces
+    -- netrw and opens its explorer when nvim starts on a directory; disabling
+    -- replace_netrw keeps the explorer closed unless explicitly invoked.
+    "folke/snacks.nvim",
+    opts = {
+      explorer = { replace_netrw = false },
+    },
+  },
 }
