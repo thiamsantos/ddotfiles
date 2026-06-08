@@ -1,3 +1,12 @@
 -- Options are automatically loaded before lazy.nvim startup
--- Default LazyVim options: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
--- Custom options are added in Task 7.
+-- LazyVim defaults: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
+
+vim.g.have_nerd_font = true
+
+local o = vim.o
+o.scrolloff = 10
+o.confirm = true
+o.relativenumber = true
+
+vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
+vim.o.list = true
