@@ -40,4 +40,23 @@ return {
       explorer = { replace_netrw = false },
     },
   },
+  {
+    -- Use the classic bottom command line instead of noice's floating popup.
+    -- noice stays enabled for messages/LSP; only the cmdline rendering changes.
+    "folke/noice.nvim",
+    opts = {
+      cmdline = {
+        view = "cmdline", -- classic cmdline at the bottom (not the floating popup)
+        format = {
+          -- Drop the leading glyphs (we run a text-only UI).
+          cmdline = { icon = ":" },
+          search_down = { icon = "/" },
+          search_up = { icon = "?" },
+        },
+      },
+      presets = {
+        command_palette = false, -- don't float/center the cmdline + completion
+      },
+    },
+  },
 }
