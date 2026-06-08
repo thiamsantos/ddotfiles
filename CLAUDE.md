@@ -46,23 +46,28 @@ stow --verbose --target="$HOME/.config/nvim" nvim
 
 ## Neovim Architecture
 
-Plugin manager: [lazy.nvim](https://github.com/folke/lazy.nvim). Each plugin lives in `nvim/lua/plugins/<name>.lua` and is `require`d directly in `nvim/init.lua`.
+Distribution: [LazyVim](https://www.lazyvim.org) on top of [lazy.nvim](https://github.com/folke/lazy.nvim). `nvim/init.lua` calls `require("config.lazy")`, which imports LazyVim, a set of language Extras, and the local overrides in `nvim/lua/plugins/`.
 
-LSP servers are managed by Mason (`:Mason` to inspect), except **dexter** (Elixir LSP) which is installed via mise/brew and registered manually in `nvim/lua/plugins/lsp.lua`.
+- `nvim/lua/config/` — `lazy.lua` (bootstrap + Extras imported), `options.lua`, `keymaps.lua`, `autocmds.lua`.
+- `nvim/lua/plugins/*.lua` — one focused override spec per concern: `colorscheme` (dracula), `git` (Neogit), `editor` (fzf-lua keymaps), `elixir` (dexter LSP), `lsp` (fish_lsp, sqlls), `test` (vim-test), `misc` (other.nvim, maximize.nvim).
+- LSP/formatting/treesitter come from LazyVim + lang Extras. The picker is **fzf-lua** (LazyVim default). Git UI is **Neogit** on `<leader>gg`. Elixir uses **dexter**, registered manually because it is installed via mise/brew, not Mason.
 
-Formatting runs on save via conform.nvim: `stylua` for Lua, `mix format` for Elixir.
+`nvim-backup/` is a committed, never-stowed snapshot of the previous kickstart config, kept for rollback.
 
-Key leader mappings (`<Space>` is leader):
+Key custom mappings (`<Space>` is leader):
 
 | Key | Action |
 |---|---|
-| `<leader>sf` | Telescope: find files |
-| `<leader>sg` | Telescope: live grep |
-| `<leader>mf` | Format buffer |
+| `<leader><leader>` | fzf-lua: git-aware find files |
+| `<leader>ff` | fzf-lua: files in current buffer dir |
+| `<leader>s.` | fzf-lua: live grep in current buffer dir |
+| `<leader>fy` / `<leader>fY` | Yank absolute / project-relative file path |
 | `<leader>mtt` | Open alternate file (test ↔ source) |
-| `<leader>mtv` | Run tests for current file |
-| `<leader>mts` | Run nearest test |
-| `gd` | Go to definition (LSP via Telescope) |
+| `<leader>mtv` / `<leader>mts` / `<leader>mta` / `<leader>mtr` | vim-test: file / nearest / suite / last |
+| `<leader>wo` | Maximize window |
+| `<leader>gg` | Neogit |
+
+Everything else uses LazyVim defaults (see `:help LazyVim` and which-key).
 
 ## Git Config
 
