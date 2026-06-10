@@ -36,6 +36,11 @@ return {
     -- netrw and opens its explorer when nvim starts on a directory; disabling
     -- replace_netrw keeps the explorer closed unless explicitly invoked.
     "folke/snacks.nvim",
+    -- Disable LazyVim's default `<leader>.` (Toggle Scratch Buffer); `<leader>.`
+    -- is rebound to oil.nvim below, and the scratch buffer is not used.
+    keys = {
+      { "<leader>.", false },
+    },
     opts = {
       explorer = { replace_netrw = false },
     },
@@ -56,6 +61,24 @@ return {
       },
       presets = {
         command_palette = false, -- don't float/center the cmdline + completion
+      },
+    },
+  },
+  {
+    -- Doom Emacs' `SPC .` (`find-file`): open the current file's directory as an
+    -- editable buffer. `<CR>` descends into a folder / opens a file, `-` goes to
+    -- the parent. Type a new (even nested) path and `:w` to create it.
+    "stevearc/oil.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    lazy = false, -- so oil can hijack directory buffers (e.g. `nvim .`)
+    keys = {
+      { "<leader>.", "<cmd>Oil<cr>", desc = "Open dir (oil)" },
+    },
+    opts = {
+      -- Open in the current file's directory and allow editing the filesystem.
+      default_file_explorer = true,
+      view_options = {
+        show_hidden = true,
       },
     },
   },

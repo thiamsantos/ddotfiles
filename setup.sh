@@ -17,7 +17,6 @@ mkdir -p "$HOME/.config/nvim"
 mkdir -p "$HOME/.ssh"
 mkdir -p "$HOME/.config/mise"
 mkdir -p "$HOME/.config/zellij"
-mkdir -p "$HOME/.config/cmux"
 
 if [[ $(command -v brew) == "" ]]; then
     echo "Installing Hombrew"
@@ -31,7 +30,7 @@ fi
 brew upgrade
 brew bundle
 
-stow --verbose --target=$HOME git aerospace tmux
+stow --verbose --target=$HOME git aerospace
 stow --verbose --target="$HOME/.config/fish" fish
 stow --verbose --target="$HOME/.config/ghostty" ghostty
 stow --verbose --target="$HOME/.ssh" ssh
@@ -39,7 +38,6 @@ stow --verbose --target="$HOME/.config/1Password" 1Password
 stow --verbose --target="$HOME/.config/nvim" nvim
 stow --verbose --target="$HOME/.config/mise" mise
 stow --verbose --target="$HOME/.config/zellij" zellij
-stow --verbose --target="$HOME/.config/cmux" cmux
 ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose "$HOME/.docker/cli-plugins/docker-compose"
 ln -sfn /opt/homebrew/opt/docker-buildx/bin/docker-buildx "$HOME/.docker/cli-plugins/docker-buildx"
 
@@ -57,11 +55,6 @@ else
 fi
 
 mise install
-
-if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    echo "Installing TPM..."
-    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
-fi
 
 gh release download nightly --pattern 'expert_darwin_arm64' --repo elixir-lang/expert --skip-existing --output $HOME/bin/expert
 

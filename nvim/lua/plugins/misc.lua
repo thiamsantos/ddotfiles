@@ -28,10 +28,19 @@ return {
   {
     "folke/which-key.nvim",
     opts = {
+      preset = "classic",
       spec = {
         { "<leader>m", group = "local leader" },
         { "<leader>mt", group = "tests" },
       },
+    },
+  },
+  {
+    -- dracula does not define a NotifyBackground highlight with a background,
+    -- so nvim-notify warns and falls back to #000000. Pin it to dracula's bg.
+    "rcarriga/nvim-notify",
+    opts = {
+      background_colour = "#282A36",
     },
   },
 }

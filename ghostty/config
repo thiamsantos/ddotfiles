@@ -5,8 +5,5 @@ quit-after-last-window-closed = true
 confirm-close-surface = true
 # Unbind select_all so Cmd+a is available for other uses (e.g. hyper key combos).
 keybind = super+a=unbind
-# Hyper+a (Ctrl+Cmd+Alt+a) forwards C-a (\x01) to tmux as the prefix key.
-# Terminals can't pass Cmd to tmux directly, so Ghostty translates it here.
-keybind = ctrl+super+alt+a=text:\x01
 # Hyper+g forwards Ctrl+g (\x07) to zellij — unlocks and enters gateway (Normal) mode.
 keybind = ctrl+super+alt+g=text:\x07

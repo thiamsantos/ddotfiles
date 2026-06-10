@@ -42,14 +42,13 @@ stow --verbose --target="$HOME/.config/nvim" nvim
 | `nvim/` | `$HOME/.config/nvim` |
 | `mise/` | `$HOME/.config/mise` |
 | `zellij/` | `$HOME/.config/zellij` |
-| `cmux/` | `$HOME/.config/cmux` |
 
 ## Neovim Architecture
 
 Distribution: [LazyVim](https://www.lazyvim.org) on top of [lazy.nvim](https://github.com/folke/lazy.nvim). `nvim/init.lua` calls `require("config.lazy")`, which imports LazyVim, a set of language Extras, and the local overrides in `nvim/lua/plugins/`.
 
 - `nvim/lua/config/` — `lazy.lua` (bootstrap + Extras imported), `options.lua`, `keymaps.lua`, `autocmds.lua`.
-- `nvim/lua/plugins/*.lua` — one focused override spec per concern: `colorscheme` (dracula), `git` (Neogit), `editor` (fzf-lua keymaps), `elixir` (dexter LSP), `lsp` (fish_lsp, sqlls), `test` (vim-test), `misc` (other.nvim, maximize.nvim).
+- `nvim/lua/plugins/*.lua` — one focused override spec per concern: `colorscheme` (dracula), `git` (Neogit), `editor` (fzf-lua keymaps), `elixir` (dexter LSP), `lsp` (fish_lsp, sqlls), `test` (vim-test), `markdown` (disables markdownlint-cli2), `icons` (ASCII, no Nerd Font), `misc` (other.nvim, maximize.nvim, which-key classic preset, nvim-notify).
 - LSP/formatting/treesitter come from LazyVim + lang Extras. The picker is **fzf-lua** (LazyVim default). Git UI is **Neogit** on `<leader>gg`. Elixir uses **dexter**, registered manually because it is installed via mise/brew, not Mason.
 
 `nvim-backup/` is a committed, never-stowed snapshot of the previous kickstart config, kept for rollback.

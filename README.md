@@ -11,7 +11,7 @@ Personal dotfiles and development environment configuration for macOS. This repo
 - **Git**: Optimized configuration with delta for better diffs
 - **SSH**: 1Password SSH agent integration
 - **Window Management**: Aerospace for tiling window management
-- **Terminal Multiplexer**: tmux with session persistence, Dracula theme, and vim-style keybindings
+- **Terminal Multiplexer**: Zellij
 
 ## 🚀 Quick Start
 
@@ -47,18 +47,23 @@ The setup script will:
 
 ## 📁 Repository Structure
 
+Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) package symlinked into `$HOME` or `$HOME/.config/<tool>`.
+
 ```
 dotfiles/
 ├── 1Password/          # 1Password SSH agent configuration
-├── aerospace/          # Window management configuration
-├── fish/              # Fish shell configuration and functions
-├── git/               # Git configuration files
-├── nvim/              # Neovim configuration and plugins
-├── ssh/               # SSH configuration
-├── vim/               # Vim configuration
-├── Brewfile           # Homebrew package definitions
-├── setup.sh           # Automated setup script
-└── README.md          # This file
+├── aerospace/          # Tiling window manager
+├── fish/               # Fish shell configuration and functions
+├── ghostty/            # Ghostty terminal configuration
+├── git/                # Git configuration (incl. global gitignore)
+├── mise/               # Mise version-manager tool versions
+├── nvim/               # Neovim (LazyVim) configuration and plugins
+├── ssh/                # SSH configuration
+├── zellij/             # Zellij multiplexer configuration
+├── nvim-backup/        # Pre-LazyVim snapshot, never stowed (rollback)
+├── Brewfile            # Homebrew package definitions
+├── setup.sh            # Automated setup script
+└── README.md           # This file
 ```
 
 ## 🐟 Fish Shell
@@ -69,58 +74,57 @@ dotfiles/
 - AWS profile configuration
 - Path management for development tools
 
-### Git Aliases
-- `ga` - Add files to staging
-- `gc` - Commit with message
+### Git Abbreviations
+Defined in `fish/conf.d/abbrs.fish`:
+- `ga` / `gap` - `git add` / `git add -p`
+- `gc` / `gca` - Commit with message / amend (no edit)
+- `gck` - Checkout
 - `gpl` - Pull with rebase
-- `gp` - Push current branch
+- `gp` / `gpf` - Push HEAD (set upstream) / force-with-lease
 - `gb` - Create and checkout new branch
-- `grsync` - Sync branch with main
 
 ### Git Functions
-- `gsup` - Set upstream tracking
-- `grsync` - Sync current branch with main using rebase
+- `grsync` - Rebase the current branch onto main (`fish/functions/grsync.fish`)
 
 ## 🎨 Neovim
 
-### Features
-- LSP support with automatic server installation
-- Telescope for fuzzy finding
-- Treesitter for syntax highlighting
-- Auto-completion with blink.cmp
-- Git integration with gitsigns
-- Auto-formatting with conform.nvim
-
-### Key Mappings
-- `<leader>sf` - Find files
-- `<leader>sg` - Live grep
-- `<leader>sd` - Search diagnostics
-- `<leader>f` - Format buffer
-- `<C-h/j/k/l>` - Navigate windows
-
-## 🖥️ Terminal (Alacritty)
+Built on [LazyVim](https://www.lazyvim.org) (lazy.nvim) with a small set of local overrides in `nvim/lua/plugins/`. See [CLAUDE.md](CLAUDE.md) for the architecture details.
 
 ### Features
-- Dracula color scheme
-- SF Mono font
-- Vi-mode navigation
-- Custom keybindings for scrolling and selection
+- LazyVim defaults with language Extras (Elixir, Rust, TypeScript, JSON, YAML, Docker, Markdown)
+- **fzf-lua** as the picker (LazyVim default)
+- **Neogit** for the git UI
+- Elixir LSP via **dexter** (installed through mise/brew, not Mason)
+- Dracula colorscheme, ASCII icons (no Nerd Font)
 
-### Vi-mode Shortcuts
-- `Ctrl+A` - Toggle vi mode
-- `Ctrl+Y` - Scroll line up
-- `Ctrl+E` - Scroll line down
-- `Ctrl+B` - Page up
-- `Ctrl+F` - Page down
+### Custom Key Mappings
+`<Space>` is the leader.
+
+- `<leader><leader>` - Find files (git-aware)
+- `<leader>ff` - Files in current buffer dir
+- `<leader>s.` - Live grep in current buffer dir
+- `<leader>fy` / `<leader>fY` - Yank absolute / project-relative file path
+- `<leader>mtt` - Open alternate file (test ↔ source)
+- `<leader>mtv` / `<leader>mts` / `<leader>mta` / `<leader>mtr` - vim-test: file / nearest / suite / last
+- `<leader>wo` - Maximize window
+- `<leader>gg` - Neogit
+
+Everything else uses LazyVim defaults (`:help LazyVim`, or press `<Space>` for which-key).
+
+## 🖥️ Terminal (Ghostty)
+
+Configured in `ghostty/config`.
+
+- Dracula theme, SF Mono 16pt
+- `Cmd+a` unbound (select-all) so it's free for hyper-key combos
+- `Ctrl+Cmd+Alt+g` forwards `Ctrl+g` to zellij (gateway/Normal mode)
 
 ## 🔧 Development Tools
 
 ### Version Management (Mise)
-- **Node.js**: 22.14.0
-- **Yarn**: 1.22.19
-- **Erlang**: 27.3.3
-- **Elixir**: 1.18.3-otp-27
-- **Kubectl**: Latest
+Tool versions live in `mise/config.toml` (the source of truth). Currently manages
+Erlang, Elixir, Node, Yarn, Python, Lua, Rust, Go, kubectl, pandoc, and several
+internal tools (dexter, remotectl). Run `mise install` to sync.
 
 ### Package Management
 - **Homebrew**: System package manager
@@ -137,51 +141,6 @@ dotfiles/
 - Colima integration for Docker
 - 1Password SSH agent
 - Host-specific configurations
-
-## 📟 tmux
-
-Prefix key: `C-a` (Cmd+a)
-
-### Session & TPM
-
-| Key | Action |
-|---|---|
-| `C-a I` | Install plugins (TPM) |
-| `C-a U` | Update plugins (TPM) |
-| `C-a C-s` | Save session (resurrect) |
-| `C-a C-r` | Restore session (resurrect) |
-| `C-a F` | Fuzzy find windows/sessions/panes (tmux-fzf) |
-
-### Windows & Panes
-
-| Key | Action |
-|---|---|
-| `C-a \|` | Split pane horizontally (right) |
-| `C-a -` | Split pane vertically (below) |
-| `C-a h/j/k/l` | Navigate panes (vim-style) |
-| `C-a H/J/K/L` | Resize panes (vim-style, repeatable) |
-| `C-a z` | Zoom/unzoom pane |
-| `C-a w` | Display pane numbers |
-| `C-a b` | Previous window |
-| `C-a q` | Kill pane |
-| `C-a Q` | Kill window |
-| `C-a X` | Kill session (with confirmation) |
-
-### Copy Mode
-
-| Key | Action |
-|---|---|
-| `C-a Escape` | Enter copy mode |
-| `v` | Begin selection |
-| `y` | Copy selection to macOS clipboard |
-| `C-a p` | Paste buffer |
-
-### Other
-
-| Key | Action |
-|---|---|
-| `C-a r` | Reload tmux config |
-| `C-a C-a` | Send `C-a` to inner app (nested tmux, etc.) |
 
 ## 🎯 Window Management
 
