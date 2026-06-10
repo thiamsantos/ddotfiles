@@ -5,5 +5,5 @@ quit-after-last-window-closed = true
 confirm-close-surface = true
 # Unbind select_all so Cmd+a is available for other uses (e.g. hyper key combos).
 keybind = super+a=unbind
-# Hyper+g forwards Ctrl+g (\x07) to zellij — unlocks and enters gateway (Normal) mode.
-keybind = ctrl+super+alt+g=text:\x07
+# Hyper+a forwards Ctrl+a (\x01) to zellij — unlocks and enters Normal mode.
+keybind = ctrl+super+alt+a=text:\x01
