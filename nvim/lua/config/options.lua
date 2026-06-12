@@ -6,6 +6,11 @@
 -- is overridden separately in lua/plugins/icons.lua.
 vim.g.have_nerd_font = false
 
+-- Use the native Go TypeScript LSP (tsgo, @typescript/native-preview) instead of
+-- vtsls — much faster, especially in monorepos. Preview server; revert to "vtsls"
+-- if a needed refactor/code-action is missing.
+vim.g.lazyvim_ts_lsp = "tsgo"
+
 local o = vim.o
 o.scrolloff = 10
 o.confirm = true
