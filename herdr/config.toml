@@ -1,0 +1,35 @@
+# herdr configuration
+# https://herdr.dev/docs/configuration/
+
+[theme]
+name = "dracula"
+
+[terminal]
+default_shell = "/opt/homebrew/bin/fish"
+new_cwd = "follow"
+
+[keys]
+prefix = "ctrl+a"
+
+navigate_workspace_up = "k"
+navigate_workspace_down = "j"
+
+next_agent = "prefix+a"
+previous_agent = "prefix+shift+a"
+
+[[keys.command]]
+key = "prefix+f"
+type = "popup"
+command = "fish -c herdr-pick-agent"
+description = "fuzzy pick agent (fzf)"
+width = "90%"
+height = "85%"
+
+[[keys.command]]
+key = "prefix+o"
+type = "popup"
+command = "fish -c herdr-pick-workspace"
+description = "fuzzy pick workspace (fzf)"
+width = "90%"
+height = "85%"
+

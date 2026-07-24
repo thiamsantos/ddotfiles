@@ -42,6 +42,7 @@ stow --verbose --target="$HOME/.config/nvim" nvim
 | `nvim/` | `$HOME/.config/nvim` |
 | `mise/` | `$HOME/.config/mise` |
 | `zellij/` | `$HOME/.config/zellij` |
+| `herdr/` | `$HOME/.config/herdr` |
 
 ## Neovim Architecture
 
