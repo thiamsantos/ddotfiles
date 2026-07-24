@@ -9,3 +9,5 @@ lefthook.yml
 .dexter.db*
 mise.local.toml
 docs/superpowers/
+
+**/.claude/settings.local.json

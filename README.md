@@ -60,7 +60,6 @@ dotfiles/
 ├── nvim/               # Neovim (LazyVim) configuration and plugins
 ├── ssh/                # SSH configuration
 ├── zellij/             # Zellij multiplexer configuration
-├── nvim-backup/        # Pre-LazyVim snapshot, never stowed (rollback)
 ├── Brewfile            # Homebrew package definitions
 ├── setup.sh            # Automated setup script
 └── README.md           # This file
