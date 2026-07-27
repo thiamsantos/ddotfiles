@@ -17,6 +17,9 @@ navigate_workspace_down = "j"
 next_agent = "prefix+a"
 previous_agent = "prefix+shift+a"
 
+next_tab = "prefix+t"
+new_workspace = "prefix+n"
+
 [[keys.command]]
 key = "prefix+f"
 type = "popup"
