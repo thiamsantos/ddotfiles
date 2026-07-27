@@ -1,0 +1,14 @@
+# Copy to ~/.gitconfig-work and fill in your work identity.
+# Included from ~/.gitconfig via includeIf for gitdir:~/dev/remote/.
+[user]
+  email = you@company.com
+  signingkey = ssh-ed25519 AAAA_YOUR_WORK_PUBLIC_SIGNING_KEY
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[commit]
+  gpgsign = true

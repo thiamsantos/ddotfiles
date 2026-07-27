@@ -1,0 +1,14 @@
+# Copy to ~/.gitconfig-personal and fill in your personal identity.
+# Included from ~/.gitconfig via includeIf for gitdir:~/dev/thiamsantos/ and ~/dev/dotfiles/.
+[user]
+  email = you@example.com
+  signingkey = ssh-ed25519 AAAA_YOUR_PERSONAL_PUBLIC_SIGNING_KEY
+
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[commit]
+  gpgsign = true
