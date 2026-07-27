@@ -34,12 +34,12 @@ function r --description "Connect to remote environments (staging, sandbox, prod
                 end
             case get-param
                 if test (count $argv) -ne 4
-                    echo "Error: get-param requires: r get-param [stg|sand|prod] [REDACTED-SERVICE|REDACTED-SERVICE] PARAM_NAME" >&2
+                    echo "Error: get-param requires: r get-param [stg|sand|prod] SERVICE PARAM_NAME" >&2
                     return 1
                 end
             case set-param
                 if test (count $argv) -ne 5
-                    echo "Error: set-param requires: r set-param [stg|sand|prod] [REDACTED-SERVICE|REDACTED-SERVICE] PARAM_NAME VALUE" >&2
+                    echo "Error: set-param requires: r set-param [stg|sand|prod] SERVICE PARAM_NAME VALUE" >&2
                     return 1
                 end
         end
@@ -50,7 +50,7 @@ function r --description "Connect to remote environments (staging, sandbox, prod
         return 1
     end
 
-    set -l config (__r_get_env_config $env)
+    set -l config (__r_get_env_config $env); or return 1
     __r_setup_env (string split " " $config)
 
     if test "$env" = review
@@ -61,16 +61,17 @@ function r --description "Connect to remote environments (staging, sandbox, prod
 end
 
 function __r_get_env_config --argument env_short
-    switch $env_short
-        case stg
-            echo staging eu REDACTED-ROLE REDACTED-CLUSTER eu-west-1
-        case sand
-            echo sandbox us REDACTED-ROLE REDACTED-CLUSTER us-east-1
-        case prod
-            echo production eu REDACTED-ROLE REDACTED-CLUSTER eu-west-1
-        case review
-            echo staging eu REDACTED-ROLE REDACTED-CLUSTER eu-west-1
+    if not functions -q __r_env_config
+        echo "r: no environment config found." >&2
+        echo "r: create ~/.config/fish/conf.d/r.local.fish from fish/conf.d/r.local.fish.example" >&2
+        return 1
     end
+    set -l config (__r_env_config $env_short)
+    if test -z "$config"
+        echo "r: unknown environment '$env_short' (define it in ~/.config/fish/conf.d/r.local.fish)" >&2
+        return 1
+    end
+    echo $config
 end
 
 function __r_setup_env
@@ -130,7 +131,7 @@ function __r_show_usage
     echo "Usage:"
     echo "  r [psql|iex|login] [stg|sand|prod]"
     echo "  r iex review APP_NAME"
-    echo "  r [get-param|set-param] [stg|sand|prod] [REDACTED-SERVICE|REDACTED-SERVICE] PARAM_NAME [VALUE]"
+    echo "  r [get-param|set-param] [stg|sand|prod] SERVICE PARAM_NAME [VALUE]"
     echo ""
     echo "Available commands:"
     echo "  r login stg                    - Login to staging environment"
@@ -143,9 +144,9 @@ function __r_show_usage
     echo "  r iex sand                     - Start IEx shell on sandbox"
     echo "  r iex prod                     - Start IEx shell on production"
     echo "  r iex review APP_NAME          - Start IEx shell on a review app deploy (staging)"
-    echo "  r get-param stg REDACTED-SERVICE PARAM    - Get SSM parameter from staging/REDACTED-SERVICE"
-    echo "  r get-param sand REDACTED-SERVICE PARAM - Get SSM parameter from sandbox/REDACTED-SERVICE"
-    echo "  r set-param prod REDACTED-SERVICE PARAM VALUE - Set SSM parameter in production/REDACTED-SERVICE"
+    echo "  r get-param stg SERVICE PARAM       - Get SSM parameter from staging/SERVICE"
+    echo "  r set-param prod SERVICE PARAM VALUE - Set SSM parameter in production/SERVICE"
+    echo "  (valid SERVICE names are your own; see fish/conf.d/r.local.fish.example)"
     echo ""
     echo "SSM Parameter commands automatically construct the path as: /{env}/{service}/PARAM_NAME"
     echo ""

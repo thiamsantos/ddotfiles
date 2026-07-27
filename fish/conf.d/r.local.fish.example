@@ -1,0 +1,16 @@
+# Copy to ~/.config/fish/conf.d/r.local.fish and fill in your environments.
+# `r` (fish/functions/r.fish) calls __r_env_config to resolve each short name.
+# Echo exactly five space-separated fields:
+#   env_name region role cluster_name cluster_region
+function __r_env_config --argument env_short
+    switch $env_short
+        case stg
+            echo <env-name> <region> <role> <cluster-name> <cluster-region>
+        case sand
+            echo <env-name> <region> <role> <cluster-name> <cluster-region>
+        case prod
+            echo <env-name> <region> <role> <cluster-name> <cluster-region>
+        case review
+            echo <env-name> <region> <role> <cluster-name> <cluster-region>
+    end
+end
