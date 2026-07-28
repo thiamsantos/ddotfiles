@@ -57,6 +57,7 @@ function herdr-tuicr-review --description "Open tuicr in a half-width herdr spli
     herdr pane run "$pane_id" "$tuicr_cmd; echo __TUICR_DONE__ > $fifo" >/dev/null 2>&1
 
     echo "herdr-tuicr-review: tuicr open in a herdr pane. Review, then press q to close it." >&2
+    echo "herdr-tuicr-review: (if it asks to copy to clipboard on quit, dismiss it — comments are read from the session)." >&2
 
     # Block until tuicr exits (writes to the fifo).
     read -z __htr_done <"$fifo"
