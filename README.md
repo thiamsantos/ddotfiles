@@ -25,7 +25,7 @@ Personal dotfiles and development environment configuration for macOS. This repo
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/dotfiles.git ~/.dotfiles
+   git clone https://github.com/thiamsantos/ddotfiles.git ~/.dotfiles
    cd ~/.dotfiles
    ```
 
@@ -44,6 +44,11 @@ The setup script will:
 - Install Node.js, Yarn, Erlang, and Elixir
 - Set up all dotfiles using GNU Stow
 - Configure 1Password SSH agent
+
+On first run, `setup.sh` creates local, gitignored config files from the
+committed `*.example` templates: `~/.gitconfig-work`, `~/.gitconfig-personal`,
+`~/.config/fish/conf.d/r.local.fish`, and `~/.config/mise/config.local.toml`.
+Edit those with your own values — they are never committed.
 
 ## 📁 Repository Structure
 
@@ -121,9 +126,10 @@ Configured in `ghostty/config`.
 ## 🔧 Development Tools
 
 ### Version Management (Mise)
-Tool versions live in `mise/config.toml` (the source of truth). Currently manages
-Erlang, Elixir, Node, Yarn, Python, Lua, Rust, Go, kubectl, pandoc, and several
-internal tools (dexter, remotectl). Run `mise install` to sync.
+Tool versions live in `mise/config.toml` (the source of truth). It manages
+Erlang, Elixir, Node, Yarn, Python, Lua, Rust, Go, kubectl, pandoc, and dexter.
+Run `mise install` to sync. Machine-local tools go in a gitignored
+`~/.config/mise/config.local.toml`.
 
 ### Package Management
 - **Homebrew**: System package manager
@@ -170,12 +176,6 @@ mise update
 
 ```
 
-### Backup Configuration
-```bash
-# Backup current dotfiles
-cp -r ~/.config ~/dotfiles-backup-$(date +%Y%m%d)
-```
-
 ## 🐛 Troubleshooting
 
 ### Common Issues
@@ -208,18 +208,6 @@ nvim --headless -c "checkhealth" -c "q"
 mise --version
 ```
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
 - [Fish shell](https://fishshell.com/) for the modern shell experience
@@ -227,15 +215,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Homebrew](https://brew.sh/) for package management
 - [Mise](https://mise.jdx.dev/) for version management
 - [GNU Stow](https://www.gnu.org/software/stow/) for dotfile management
-
-## 📞 Support
-
-If you encounter any issues or have questions:
-1. Check the troubleshooting section above
-2. Search existing issues
-3. Create a new issue with detailed information
-
----
-
-**Happy coding! 🚀**
 
