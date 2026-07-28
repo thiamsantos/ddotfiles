@@ -52,8 +52,10 @@ def main():
             pool.sort(key=lambda r: r.get("updated_at", ""), reverse=True)
             return emit(pool[0])
 
-    # Flow 2 (-r / -w / -A) and fallback: prefer a local slug NEW since snapshot, else most-recent local.
-    locals_ = [r for r in rows if r.get("kind") == "local"]
+    # Flow 2 (-r / -w / -A) and fallback: prefer a local slug NEW since snapshot,
+    # else most-recent local. Exclude @~file sessions — those are Flow 1 (file
+    # annotation) and must never be returned for a branch/diff review.
+    locals_ = [r for r in rows if r.get("kind") == "local" and "@~file" not in r.get("slug", "")]
     fresh = [r for r in locals_ if r.get("slug", "") not in before]
     pool = fresh or locals_
     if pool:

@@ -53,8 +53,10 @@ function herdr-tuicr-review --description "Open tuicr in a half-width herdr spli
     # Build a single shell command string: run tuicr, then signal done.
     # herdr pane run takes the command as ONE arg (it is submitted to the pane's
     # shell); passing `sh -c` + separate args does NOT execute. Keep it one string.
-    set -l tuicr_cmd (string join ' ' -- tuicr $argv_rest)
-    herdr pane run "$pane_id" "$tuicr_cmd; echo __TUICR_DONE__ > $fifo" >/dev/null 2>&1
+    # Shell-escape each arg so paths with spaces survive the pane shell.
+    set -l tuicr_cmd (string join ' ' -- tuicr (string escape -- $argv_rest))
+    set -l fifo_esc (string escape -- $fifo)
+    herdr pane run "$pane_id" "$tuicr_cmd; echo __TUICR_DONE__ > $fifo_esc" >/dev/null 2>&1
 
     echo "herdr-tuicr-review: tuicr open in a herdr pane. Review, then press q to close it." >&2
     echo "herdr-tuicr-review: (if it asks to copy to clipboard on quit, dismiss it — comments are read from the session)." >&2

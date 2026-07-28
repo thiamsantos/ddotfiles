@@ -98,9 +98,13 @@ to; reporting is the deliverable.
 Review the current branch's diff against its target branch.
 
 ```bash
-base=$(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@')
+base=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@')
+: "${base:=main}"   # origin/HEAD is often unset; fall back to main, or confirm with the user
 herdr-tuicr-review --cwd "<repo dir>" -- -r "$base..HEAD"
 ```
+
+If `origin/HEAD` is unset and `main` is not the real target branch (e.g. the
+repo uses `master`), confirm the base branch with the user before launching.
 
 Overrides, if the user asks:
 - "uncommitted" / "working tree" → `-w` instead of `-r …`
