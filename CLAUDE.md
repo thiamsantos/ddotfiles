@@ -1,39 +1,18 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude Code when working in this repository. For what's installed and how a human sets it up, see `README.md` — this file covers how the setup works and how to change it.
 
-## Overview
+## How it works
 
-Personal macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Each top-level directory is a stow package that gets symlinked into `$HOME` or `$HOME/.config/<tool>`.
+Personal macOS dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/). Each top-level directory is a Stow package symlinked into `$HOME` or `$HOME/.config/<tool>`. `setup.sh` is the source of truth for the bootstrap order: Homebrew + `Brewfile`, seed machine-local config, `stow` each package, set the Fish shell, `mise install`.
 
-## Package Management
+Editing a config means editing the file in its package here; the symlink means the change is live immediately (no copy step). After changing which files a package exposes, re-run `stow` for that package.
 
-All system packages and apps are managed via Homebrew. **When installing any new CLI tool, font, or app, add it to `Brewfile` first** — don't install ad-hoc without updating the file.
+### Stow package → target
 
-```bash
-brew bundle          # Install everything in Brewfile
-```
-
-## Setup
-
-```bash
-./setup.sh   # Full bootstrap: Homebrew + packages + stow + mise install
-```
-
-To re-apply stow symlinks for a single package without running the full script:
-
-```bash
-stow --verbose --target=$HOME git aerospace
-stow --verbose --target="$HOME/.config/fish" fish
-stow --verbose --target="$HOME/.config/nvim" nvim
-# etc. — see setup.sh for all targets
-```
-
-## Stow Package → Target Mapping
-
-| Package | Stow target |
+| Package | Target |
 |---|---|
-| `git/` | `$HOME` (produces `~/.gitconfig`, `~/.globalgitignore`) |
+| `git/` | `$HOME` (`~/.gitconfig`, `~/.globalgitignore`) |
 | `aerospace/` | `$HOME` |
 | `fish/` | `$HOME/.config/fish` |
 | `ghostty/` | `$HOME/.config/ghostty` |
@@ -44,38 +23,53 @@ stow --verbose --target="$HOME/.config/nvim" nvim
 | `zellij/` | `$HOME/.config/zellij` |
 | `herdr/` | `$HOME/.config/herdr` |
 
+## Rules for changes
+
+- **Packages/apps go through Homebrew.** Add any new CLI tool, font, or app to `Brewfile` before/instead of installing ad-hoc (`brew bundle` installs everything).
+- **Language/tool versions go in `mise/config.toml`.** Machine-local tools go in the gitignored `~/.config/mise/config.local.toml` overlay, never in the tracked config.
+- **Never run `mise use --global`** while `~/.config/mise/config.toml` is a Stow symlink — mise rewrites the target, leaking the tool into the tracked `mise/config.toml`. Pin the version in `config.local.toml` instead.
+- **Nvim Lua is formatted with [stylua](https://github.com/JohnnyMorganz/StyLua)** (`nvim/.stylua.toml`): `stylua nvim/`.
+
 ## Machine-local config (gitignored but stowed)
 
-Some files hold machine- or work-specific values that must not be committed
-(identities, `r` environment topology, AWS profile). They live **inside their
-stow package but are gitignored** (see `.gitignore`), so stow symlinks them
-into place while git never tracks them. Each has a committed `*.example`
-template documenting its shape:
+Files holding machine- or work-specific values (git identities, `r` environment topology, AWS profile) live inside their Stow package but are gitignored (see `.gitignore`), so Stow symlinks them while Git never tracks them. Each has a committed `*.example` template:
 
-| Gitignored file (stowed) | Template |
+| Gitignored file | Template |
 |---|---|
 | `git/.gitconfig-work` | `git/.gitconfig-work.example` |
 | `git/.gitconfig-personal` | `git/.gitconfig-personal.example` |
 | `fish/conf.d/r.local.fish` | `fish/conf.d/r.local.fish.example` |
 | `fish/conf.d/aws.local.fish` | `fish/conf.d/aws.local.fish.example` |
 
-`setup.sh` seeds each from its `.example` (never overwriting an existing one)
-**before** the `stow` calls, so a fresh clone gets working symlinks. The one
-exception is `~/.config/mise/config.local.toml` (machine-local mise tools such
-as `remotectl`): it is a standalone on-disk overlay mise reads directly, not
-stowed. **Never** run `mise use --global` against a tool while `~/.config/mise/
-config.toml` is a stow symlink — mise writes it back into the tracked
-`mise/config.toml`. Pin machine-local tools in `config.local.toml` instead.
+`setup.sh` seeds each from its `.example` (never overwriting) **before** the `stow` calls, so a fresh clone gets working symlinks. When editing these, edit the real (gitignored) file; keep the `.example` in sync when the shape changes.
 
-## Neovim Architecture
+## Git config
 
-Distribution: [LazyVim](https://www.lazyvim.org) on top of [lazy.nvim](https://github.com/folke/lazy.nvim). `nvim/init.lua` calls `require("config.lazy")`, which imports LazyVim, a set of language Extras, and the local overrides in `nvim/lua/plugins/`.
+`~/.gitconfig` uses `includeIf` to swap identity by directory:
+- `~/dev/thiamsantos/` and `~/dev/dotfiles/` → `~/.gitconfig-personal`
+- `~/dev/remote/` → `~/.gitconfig-work`
 
-- `nvim/lua/config/` — `lazy.lua` (bootstrap + Extras imported), `options.lua`, `keymaps.lua`, `autocmds.lua`.
-- `nvim/lua/plugins/*.lua` — one focused override spec per concern: `colorscheme` (dracula), `git` (Neogit), `editor` (fzf-lua keymaps), `elixir` (dexter LSP), `lsp` (fish_lsp, sqlls), `test` (vim-test), `markdown` (disables markdownlint-cli2), `icons` (ASCII, no Nerd Font), `misc` (other.nvim, maximize.nvim, which-key classic preset, nvim-notify).
-- LSP/formatting/treesitter come from LazyVim + lang Extras. The picker is **fzf-lua** (LazyVim default). Git UI is **Neogit** on `<leader>gg`. Elixir uses **dexter**, registered manually because it is installed via mise/brew, not Mason.
+Both included files are Stow symlinks to the gitignored `git/.gitconfig-personal` / `git/.gitconfig-work` (see Machine-local config). Commits are SSH-signed via the 1Password agent.
 
-Key custom mappings (`<Space>` is leader):
+## Fish
+
+- **Abbreviations** (`fish/conf.d/abbrs.fish`): `ga` (add), `gap` (add -p), `gc` (commit -m), `gca` (amend --no-edit), `gck` (checkout), `gpl` (pull --rebase), `gp` (push HEAD -u), `gpf` (push --force-with-lease), `gb` (checkout -b).
+- **Functions** (`fish/functions/`):
+  - `grsync` — rebase the current branch onto the default branch.
+  - `r` — connect to remote environments (`psql`/`iex`/`login`/`get-param`/`set-param` against `stg`/`sand`/`prod`, plus `iex review APP`). Env topology comes from the gitignored `fish/conf.d/r.local.fish`; the function itself is generic. Fails with a pointer to the `.example` when that file is absent.
+  - `herdr-pick-agent` / `herdr-pick-workspace` — fzf pickers bound to herdr popups.
+  - `search_history` — fzf history search, bound to `Ctrl+r`.
+- **Keybinds** (`fish/config.fish`): `Ctrl+f`/`Ctrl+b` word motion, `Ctrl+w` backward-kill-word, `Ctrl+c` cancel line, `Ctrl+r` history search. `vim` aliases to `nvim`.
+
+## Neovim
+
+[LazyVim](https://www.lazyvim.org) on [lazy.nvim](https://github.com/folke/lazy.nvim). `nvim/init.lua` → `require("config.lazy")` imports LazyVim, language Extras, and the local overrides in `nvim/lua/plugins/`.
+
+- `nvim/lua/config/` — `lazy.lua` (bootstrap + Extras), `options.lua`, `keymaps.lua`, `autocmds.lua`.
+- `nvim/lua/plugins/*.lua` — one override spec per concern: `colorscheme` (dracula), `git` (Neogit), `editor` (fzf-lua keymaps), `elixir` (dexter LSP), `lsp` (fish_lsp, sqlls), `test` (vim-test), `markdown` (disables markdownlint-cli2), `icons` (ASCII, no Nerd Font), `misc` (other.nvim, maximize.nvim, which-key classic preset, nvim-notify).
+- LSP/formatting/treesitter come from LazyVim + lang Extras. Picker is **fzf-lua**; Git UI is **Neogit**. Elixir uses **dexter**, registered manually (installed via mise/brew, not Mason).
+
+Custom mappings (`<Space>` leader):
 
 | Key | Action |
 |---|---|
@@ -88,20 +82,14 @@ Key custom mappings (`<Space>` is leader):
 | `<leader>wo` | Maximize window |
 | `<leader>gg` | Neogit |
 
-Everything else uses LazyVim defaults (see `:help LazyVim` and which-key).
+Everything else uses LazyVim defaults (`:help LazyVim`, or `<Space>` for which-key).
 
-## Git Config
+## Terminal & multiplexers
 
-`~/.gitconfig` uses `includeIf` to swap user identity:
-- `~/dev/thiamsantos/` and `~/dev/dotfiles/` → `~/.gitconfig-personal`
-- `~/dev/remote/` → `~/.gitconfig-work`
+- **Ghostty** (`ghostty/config`): Dracula, SF Mono 16pt. `Cmd+a` is unbound (freed for hyper-key combos). `Ctrl+Cmd+Alt+a` forwards `Ctrl+a` (`\x01`), which enters Zellij Normal mode.
+- **Zellij** (`zellij/config.kdl`): starts in **locked** mode; `Ctrl+a` enters Normal mode, then vim-style submodes (`p` pane, `t` tab, `s` scroll, `n` resize, `h` move, `o` session, `a` tmux-compat). `g`/`Esc` returns to locked.
+- **herdr** (`herdr/config.toml`): prefix `Ctrl+a`. `prefix+a`/`prefix+shift+a` next/prev agent, `prefix+t` next tab, `prefix+n` new workspace, `j`/`k` navigate workspaces, `prefix+f` fzf agent picker, `prefix+o` fzf workspace picker.
 
-The included files (`~/.gitconfig-personal`, `~/.gitconfig-work`) are stow symlinks to the gitignored `git/.gitconfig-personal` / `git/.gitconfig-work` in this repo — see [Machine-local config](#machine-local-config-gitignored-but-stowed).
+## Window management (Aerospace)
 
-## Fish Abbreviations
-
-Defined in `fish/conf.d/abbrs.fish`. Key git abbreviations: `ga`, `gap`, `gc`, `gca`, `gck`, `gpl`, `gp`, `gpf`, `gb`. The `grsync` function (rebase current branch onto main) lives in `fish/functions/grsync.fish`.
-
-## Lua Formatting
-
-Neovim Lua files use [stylua](https://github.com/JohnnyMorganz/StyLua). Config is at `nvim/.stylua.toml`. Run manually: `stylua nvim/`.
+`aerospace/.aerospace.toml`, prefix `Ctrl+Alt+Cmd`: `Enter` new Ghostty, `h`/`j`/`k`/`l` focus (add `Shift` to move), `1`–`0` workspaces (add `Shift` to move node), `f` fullscreen, `r` resize mode, `Shift+R` reload config, `q` close. Runs JankyBorders at startup.

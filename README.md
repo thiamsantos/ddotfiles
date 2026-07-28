@@ -1,232 +1,76 @@
-# 🏠 Dotfiles
+# Dotfiles
 
-Personal dotfiles and development environment configuration for macOS. This repository contains configurations for various tools and applications to create a consistent and productive development experience.
+Personal macOS development environment, managed with [GNU Stow](https://www.gnu.org/software/stow/). Each top-level directory is a Stow package symlinked into `$HOME` or `$HOME/.config/<tool>`. All packages and apps are declared in `Brewfile`.
 
-## ✨ Features
+## What's included
 
-- **Shell**: Fish shell with custom aliases and functions
-- **Editor**: Neovim with LSP support and modern plugins
-- **Package Management**: Homebrew with Brewfile for easy setup
-- **Version Management**: Mise for Node.js, Erlang, Elixir, and other tools
-- **Git**: Optimized configuration with delta for better diffs
-- **SSH**: 1Password SSH agent integration
-- **Window Management**: Aerospace for tiling window management
-- **Terminal Multiplexer**: Zellij
+**Shell & terminal**
+- [Fish](https://fishshell.com/) shell — prompt, abbreviations, functions, history search (`fish/`)
+- [Ghostty](https://ghostty.org/) terminal — Dracula, SF Mono (`ghostty/`)
+- [Zellij](https://zellij.dev/) multiplexer — locked-mode, vim-style keys (`zellij/`)
+- [herdr](https://herdr.dev/) agent multiplexer (`herdr/`)
 
-## 🚀 Quick Start
+**Editor**
+- [Neovim](https://neovim.io/) on [LazyVim](https://www.lazyvim.org) — fzf-lua, Neogit, Dracula, ASCII icons (`nvim/`)
 
-### Prerequisites
+**Tooling**
+- [Homebrew](https://brew.sh/) for packages/apps (`Brewfile`)
+- [mise](https://mise.jdx.dev/) for language/tool versions (`mise/`)
+- Git with [delta](https://github.com/dandavison/delta), `includeIf` identity switching, SSH commit signing (`git/`)
+- [1Password](https://1password.com/) SSH agent (`1Password/`, `ssh/`)
+- [Aerospace](https://nikitabobko.github.io/AeroSpace/) tiling window manager (`aerospace/`)
 
-- macOS (tested on macOS 14+)
-- Git
-- Administrator access (for shell changes)
+**Languages via mise**: Elixir, Erlang, Node, Yarn, Python, Lua, Rust, Go, Bun, plus `kubectl`, `pandoc`, and the [dexter](https://github.com/remoteoss/dexter) Elixir LSP.
 
-### Installation
+**Notable CLI tools (Brewfile)**: `fzf`, `ripgrep`, `fd`, `jq`, `yq`, `glab`, `git-delta`, `colima`, `docker`, `direnv`, `zoxide`, `gum`, `awscli`, `gimme-aws-creds`.
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/thiamsantos/ddotfiles.git ~/.dotfiles
-   cd ~/.dotfiles
-   ```
+**Apps (casks)**: Raycast, Notion, Todoist, Spotify, Loom, Insomnia, Shottr, Stats, BetterDisplay, Keymapp, and fonts (Fira Code, SF Mono, Hack Nerd Font).
 
-2. **Run the setup script:**
-   ```bash
-   chmod +x setup.sh
-   ./setup.sh
-   ```
+## Installation
 
-3. **Restart your terminal** to pick up the new shell configuration
+Prerequisites: macOS 14+, Git, and admin access (for the shell change).
 
-The setup script will:
-- Install Homebrew and packages from Brewfile
-- Set up Fish as your default shell
-- Install and configure Mise for version management
-- Install Node.js, Yarn, Erlang, and Elixir
-- Set up all dotfiles using GNU Stow
-- Configure 1Password SSH agent
+```bash
+git clone https://github.com/thiamsantos/ddotfiles.git ~/dev/dotfiles
+cd ~/dev/dotfiles
+./setup.sh
+```
 
-#### Machine-local config (gitignored)
+`setup.sh` installs Homebrew and the `Brewfile`, seeds machine-local config (below), symlinks every package with Stow, sets Fish as the default shell, and runs `mise install`. Restart the terminal afterward.
 
-Files holding machine- or work-specific values (identities, environment
-topology, AWS profile) live **in their stow package but are gitignored**, so
-stow symlinks them into place while git never tracks them. Each has a committed
-`*.example` template documenting its shape:
+To re-link a single package without the full script:
 
-| Gitignored file (in repo, stowed) | Template | Holds |
+```bash
+stow --verbose --target="$HOME/.config/fish" fish
+```
+
+## Machine-local config
+
+Some values are machine- or work-specific and must not be committed (git identities, `r` environment topology, AWS profile). These files live inside their Stow package but are **gitignored**, so Stow symlinks them while Git never tracks them. Each has a committed `*.example` template.
+
+| Gitignored file | Template | Holds |
 |---|---|---|
 | `git/.gitconfig-work` | `git/.gitconfig-work.example` | Work git identity + signing key |
 | `git/.gitconfig-personal` | `git/.gitconfig-personal.example` | Personal git identity + signing key |
 | `fish/conf.d/r.local.fish` | `fish/conf.d/r.local.fish.example` | `r` environment definitions |
 | `fish/conf.d/aws.local.fish` | `fish/conf.d/aws.local.fish.example` | `AWS_PROFILE` / `AWS_REGION` |
 
-On a fresh clone these gitignored files don't exist yet; copy each from its
-`.example`, fill in your values, then run `setup.sh` (or re-`stow` the package)
-to symlink them. `setup.sh` also seeds `~/.config/mise/config.local.toml`
-(a standalone on-disk overlay, not stowed) for machine-local mise tools.
+On a fresh clone, `setup.sh` copies each `.example` to its real path (never overwriting) before stowing. To set one up by hand, copy the template, fill in your values, then re-run `stow` for that package. Machine-local mise tools go in `~/.config/mise/config.local.toml` (a standalone overlay, not stowed), which `setup.sh` also seeds.
 
-## 📁 Repository Structure
+## Manual setup notes
 
-Each top-level directory is a [GNU Stow](https://www.gnu.org/software/stow/) package symlinked into `$HOME` or `$HOME/.config/<tool>`.
+A few things `setup.sh` does not fully automate:
 
-```
-dotfiles/
-├── 1Password/          # 1Password SSH agent configuration
-├── aerospace/          # Tiling window manager
-├── fish/               # Fish shell configuration and functions
-├── ghostty/            # Ghostty terminal configuration
-├── git/                # Git configuration (incl. global gitignore)
-├── mise/               # Mise version-manager tool versions
-├── nvim/               # Neovim (LazyVim) configuration and plugins
-├── ssh/                # SSH configuration
-├── zellij/             # Zellij multiplexer configuration
-├── Brewfile            # Homebrew package definitions
-├── setup.sh            # Automated setup script
-└── README.md           # This file
-```
+- **Git identity files** — edit `git/.gitconfig-work` and `git/.gitconfig-personal` with your real email and 1Password SSH signing key after the first run.
+- **1Password SSH agent** — enable the SSH agent in the 1Password app; key items are referenced in `1Password/ssh/agent.toml`.
+- **Aerospace & JankyBorders** — grant Accessibility permission on first launch; the config runs `borders` at startup.
+- **Fonts** — installed as casks, but the terminal/editor must be restarted to pick them up.
 
-## 🐟 Fish Shell
+## Maintenance
 
-### Key Features
-- Custom prompt with git status
-- Git aliases and functions for common operations
-- AWS profile configuration
-- Path management for development tools
-
-### Git Abbreviations
-Defined in `fish/conf.d/abbrs.fish`:
-- `ga` / `gap` - `git add` / `git add -p`
-- `gc` / `gca` - Commit with message / amend (no edit)
-- `gck` - Checkout
-- `gpl` - Pull with rebase
-- `gp` / `gpf` - Push HEAD (set upstream) / force-with-lease
-- `gb` - Create and checkout new branch
-
-### Git Functions
-- `grsync` - Rebase the current branch onto main (`fish/functions/grsync.fish`)
-
-## 🎨 Neovim
-
-Built on [LazyVim](https://www.lazyvim.org) (lazy.nvim) with a small set of local overrides in `nvim/lua/plugins/`. See [CLAUDE.md](CLAUDE.md) for the architecture details.
-
-### Features
-- LazyVim defaults with language Extras (Elixir, Rust, TypeScript, JSON, YAML, Docker, Markdown)
-- **fzf-lua** as the picker (LazyVim default)
-- **Neogit** for the git UI
-- Elixir LSP via **dexter** (installed through mise/brew, not Mason)
-- Dracula colorscheme, ASCII icons (no Nerd Font)
-
-### Custom Key Mappings
-`<Space>` is the leader.
-
-- `<leader><leader>` - Find files (git-aware)
-- `<leader>ff` - Files in current buffer dir
-- `<leader>s.` - Live grep in current buffer dir
-- `<leader>fy` / `<leader>fY` - Yank absolute / project-relative file path
-- `<leader>mtt` - Open alternate file (test ↔ source)
-- `<leader>mtv` / `<leader>mts` / `<leader>mta` / `<leader>mtr` - vim-test: file / nearest / suite / last
-- `<leader>wo` - Maximize window
-- `<leader>gg` - Neogit
-
-Everything else uses LazyVim defaults (`:help LazyVim`, or press `<Space>` for which-key).
-
-## 🖥️ Terminal (Ghostty)
-
-Configured in `ghostty/config`.
-
-- Dracula theme, SF Mono 16pt
-- `Cmd+a` unbound (select-all) so it's free for hyper-key combos
-- `Ctrl+Cmd+Alt+g` forwards `Ctrl+g` to zellij (gateway/Normal mode)
-
-## 🔧 Development Tools
-
-### Version Management (Mise)
-Tool versions live in `mise/config.toml` (the source of truth). It manages
-Erlang, Elixir, Node, Yarn, Python, Lua, Rust, Go, kubectl, pandoc, and dexter.
-Run `mise install` to sync. Machine-local tools go in a gitignored
-`~/.config/mise/config.local.toml`.
-
-### Package Management
-- **Homebrew**: System package manager
-- **Stow**: Symlink management for dotfiles
-
-## 🔐 Security & SSH
-
-### 1Password Integration
-- SSH agent integration
-- Automatic key management
-- Secure credential storage
-
-### SSH Configuration
-- Colima integration for Docker
-- 1Password SSH agent
-- Host-specific configurations
-
-## 🎯 Window Management
-
-### Aerospace
-- Tiling window management
-- Keyboard-driven workflow
-- Custom layouts and rules
-
-## 📦 Package Management
-
-### Homebrew Packages
-Essential development tools, fonts, and applications are managed through the Brewfile:
-
-- **Development**: git, docker, colima, mise
-- **Shell**: fish, fzf, ripgrep
-- **Fonts**: Fira Code, Hack Nerd Font, SF Mono
-- **Applications**: 1Password CLI, Cursor, VS Code, Raycast
-
-## 🔄 Maintenance
-
-### Updating Packages
 ```bash
-# Update Homebrew packages
-brew update && brew upgrade
-
-# Update Mise tools
-mise update
-
+brew update && brew upgrade   # packages
+mise upgrade                  # language/tool versions
 ```
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Fish shell not working**
-   - Ensure Fish is installed: `brew install fish`
-   - Check shell path: `echo $SHELL`
-
-2. **Neovim plugins not loading**
-   - Run `:Lazy` to check plugin status
-   - Check for errors in `:checkhealth`
-
-3. **Mise tools not found**
-   - Ensure Mise is in PATH: `which mise`
-   - Reinstall Mise: `brew reinstall mise`
-
-4. **SSH agent issues**
-   - Check 1Password SSH agent: `ssh-add -l`
-   - Restart 1Password application
-
-### Health Checks
-```bash
-# Check Fish configuration
-fish -c "echo 'Fish shell is working'"
-
-# Check Neovim
-nvim --headless -c "checkhealth" -c "q"
-
-# Check Mise
-mise --version
-```
-
-## 🙏 Acknowledgments
-
-- [Fish shell](https://fishshell.com/) for the modern shell experience
-- [Neovim](https://neovim.io/) for the powerful editor
-- [Homebrew](https://brew.sh/) for package management
-- [Mise](https://mise.jdx.dev/) for version management
-- [GNU Stow](https://www.gnu.org/software/stow/) for dotfile management
-
+When adding any CLI tool, font, or app, add it to `Brewfile` rather than installing ad-hoc.
