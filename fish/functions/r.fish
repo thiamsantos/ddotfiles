@@ -96,25 +96,28 @@ function __r_execute_cmd
     set -l role $argv[4]
     set -l cluster_name $argv[5]
     set -l cluster_region $argv[6]
-    set -l service $argv[7]
-    set -l param_name $argv[8]
-    set -l param_value $argv[9]
+    set -l app $argv[7]
+    set -l pod $argv[8]
+    set -l release_bin $argv[9]
+    set -l service $argv[10]
+    set -l param_name $argv[11]
+    set -l param_value $argv[12]
 
     switch $cmd
         case psql
             echo "Connecting to $env_name PostgreSQL..."
-            remotectl portforward REDACTED-SERVICE --region $region -e $env_name --role $role --login --use-context --psql
+            remotectl portforward $app --region $region -e $env_name --role $role --login --use-context --psql
         case iex
             if test -n "$service"
                 # Review app: $service holds the target deploy name. Exec into the
-                # running pod and attach to the live node with `REDACTED-SERVICE remote`.
+                # running pod and attach to the live node with the release's `remote` command.
                 # Using `start_iex` here boots a second BEAM in the existing pod
                 # and gets OOM-killed (exit 137).
                 echo "Connecting to IEx on review app $service ($env_name)..."
-                remotectl k8s shell $service --region $region -e $env_name --role $role --login --use-context -- REDACTED-SERVICE/bin/REDACTED-SERVICE remote
+                remotectl k8s shell $service --region $region -e $env_name --role $role --login --use-context -- $release_bin remote
             else
                 echo "Starting IEx shell on $env_name..."
-                remotectl k8s shell REDACTED-SERVICE -m 4Gi --region $region -e $env_name --role $role --login --use-context -- REDACTED-SERVICE/bin/REDACTED-SERVICE start_iex
+                remotectl k8s shell $pod -m 4Gi --region $region -e $env_name --role $role --login --use-context -- $release_bin start_iex
             end
         case get-param
             set -l ssm_path "/$env_name/$service/$param_name"
