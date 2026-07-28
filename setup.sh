@@ -56,9 +56,14 @@ else
     echo "Shell setted to (homebrew) fish successefully!"
 fi
 
+# Bootstrap gitignored local config from committed .example templates (never overwrite).
+[ -f "$HOME/.gitconfig-work" ] || cp git/.gitconfig-work.example "$HOME/.gitconfig-work"
+[ -f "$HOME/.gitconfig-personal" ] || cp git/.gitconfig-personal.example "$HOME/.gitconfig-personal"
+[ -f "$HOME/.config/fish/conf.d/r.local.fish" ] || cp fish/conf.d/r.local.fish.example "$HOME/.config/fish/conf.d/r.local.fish"
+[ -f "$HOME/.config/mise/config.local.toml" ] || printf '[tools]\nremotectl = "latest"\n' > "$HOME/.config/mise/config.local.toml"
+
 mise install
 
 gh release download nightly --pattern 'expert_darwin_arm64' --repo elixir-lang/expert --skip-existing --output $HOME/bin/expert
 
 # https://github.com/remoteoss/dexter
-# curl https://cursor.com/install -fsS | bash
