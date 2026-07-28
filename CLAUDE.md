@@ -42,6 +42,18 @@ Files holding machine- or work-specific values (git identities, `r` environment 
 
 `setup.sh` seeds each from its `.example` (never overwriting) **before** the `stow` calls, so a fresh clone gets working symlinks. When editing these, edit the real (gitignored) file; keep the `.example` in sync when the shape changes.
 
+## Claude skills
+
+Skills live in `claude/skills/<name>/` and deploy to `~/.claude/skills/` by
+**copy** (not stow/symlink) via `claude/install-skills.sh`, which `setup.sh`
+runs after stowing. Edit a skill in the repo, then re-run the script to apply.
+The script also removes retired skills (`tuicr`, `review-plan-tuicr`).
+
+- `herdr-review` — opens a tuicr review in a half-width herdr pane for three
+  flows (superpowers plan/spec, current-branch diff, GitLab MR), waits for the
+  human, then reads their comments back via the session JSON path. Thin wrapper
+  over the `herdr-tuicr-review` fish function; requires an active herdr session.
+
 ## Git config
 
 `~/.gitconfig` uses `includeIf` to swap identity by directory:
@@ -58,6 +70,7 @@ Both included files are Stow symlinks to the gitignored `git/.gitconfig-personal
   - `r` — connect to remote environments (`psql`/`iex`/`login`/`get-param`/`set-param` against `stg`/`sand`/`prod`, plus `iex review APP`). Env topology comes from the gitignored `fish/conf.d/r.local.fish`; the function itself is generic. Fails with a pointer to the `.example` when that file is absent.
   - `herdr-pick-agent` / `herdr-pick-workspace` — fzf pickers bound to herdr popups.
   - `search_history` — fzf history search, bound to `Ctrl+r`.
+  - `herdr-tuicr-review` — open a tuicr review in a half-width herdr split, block until the human closes it, print the resolved session (slug + JSON path). Backs the `herdr-review` skill; session resolution lives in the sibling `herdr-tuicr-resolve-session.py`.
 - **Keybinds** (`fish/config.fish`): `Ctrl+f`/`Ctrl+b` word motion, `Ctrl+w` backward-kill-word, `Ctrl+c` cancel line, `Ctrl+r` history search. `vim` aliases to `nvim`.
 
 ## Neovim
@@ -86,7 +99,7 @@ Everything else uses LazyVim defaults (`:help LazyVim`, or `<Space>` for which-k
 ## Terminal & multiplexers
 
 - **Ghostty** (`ghostty/config`): Dracula, SF Mono 16pt. `Cmd+a` is unbound (freed for hyper-key combos). `Ctrl+Cmd+Alt+a` forwards `Ctrl+a` (`\x01`), used as the herdr prefix.
-- **herdr** (`herdr/config.toml`): prefix `Ctrl+a`. `prefix+a`/`prefix+shift+a` next/prev agent, `prefix+t` next tab, `prefix+n` new workspace, `j`/`k` navigate workspaces, `prefix+f` fzf agent picker, `prefix+o` fzf workspace picker.
+- **herdr** (`herdr/config.toml`): prefix `Ctrl+a`. `prefix+a`/`prefix+shift+a` next/prev agent, `prefix+t`/`prefix+shift+t` new/rename tab, `prefix+s`/`prefix+shift+s` new/rename workspace, `j`/`k` navigate workspaces, `prefix+f` fzf agent picker, `prefix+o` fzf workspace picker.
 
 ## Window management (Aerospace)
 

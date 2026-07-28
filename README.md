@@ -18,6 +18,7 @@ Personal macOS development environment, managed with [GNU Stow](https://www.gnu.
 - Git with [delta](https://github.com/dandavison/delta), `includeIf` identity switching, SSH commit signing (`git/`)
 - [1Password](https://1password.com/) SSH agent (`1Password/`, `ssh/`)
 - [Aerospace](https://nikitabobko.github.io/AeroSpace/) tiling window manager (`aerospace/`)
+- Claude Code skills (`claude/skills/`) deployed to `~/.claude/skills/` by `claude/install-skills.sh` — includes `herdr-review`, which opens [tuicr](https://github.com/agavra/tuicr) reviews in a herdr pane
 
 **Languages via mise**: Elixir, Erlang, Node, Yarn, Python, Lua, Rust, Go, Bun, plus `kubectl`, `pandoc`, and the [dexter](https://github.com/remoteoss/dexter) Elixir LSP.
 
@@ -35,7 +36,7 @@ cd ~/dev/dotfiles
 ./setup.sh
 ```
 
-`setup.sh` installs Homebrew and the `Brewfile`, seeds machine-local config (below), symlinks every package with Stow, sets Fish as the default shell, and runs `mise install`. Restart the terminal afterward.
+`setup.sh` installs Homebrew and the `Brewfile`, seeds machine-local config (below), symlinks every package with Stow, deploys Claude skills into `~/.claude/skills/`, sets Fish as the default shell, and runs `mise install`. Restart the terminal afterward.
 
 To re-link a single package without the full script:
 
@@ -64,6 +65,7 @@ A few things `setup.sh` does not fully automate:
 - **1Password SSH agent** — enable the SSH agent in the 1Password app; key items are referenced in `1Password/ssh/agent.toml`.
 - **Aerospace & JankyBorders** — grant Accessibility permission on first launch; the config runs `borders` at startup.
 - **Fonts** — installed as casks, but the terminal/editor must be restarted to pick them up.
+- **Claude skills** — `setup.sh` copies `claude/skills/*` into `~/.claude/skills/`. After editing a skill in the repo, re-run `claude/install-skills.sh` to apply (it copies, so edits are not live until you do). The `herdr-review` skill needs an active herdr session and `tuicr`.
 
 ## Maintenance
 
