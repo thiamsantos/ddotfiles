@@ -1,3 +1,4 @@
 fish/conf.d/r.local.fish
+fish/conf.d/aws.local.fish
 git/.gitconfig-work
 git/.gitconfig-personal

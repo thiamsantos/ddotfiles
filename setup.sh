@@ -60,6 +60,7 @@ fi
 [ -f "$HOME/.gitconfig-work" ] || cp git/.gitconfig-work.example "$HOME/.gitconfig-work"
 [ -f "$HOME/.gitconfig-personal" ] || cp git/.gitconfig-personal.example "$HOME/.gitconfig-personal"
 [ -f "$HOME/.config/fish/conf.d/r.local.fish" ] || cp fish/conf.d/r.local.fish.example "$HOME/.config/fish/conf.d/r.local.fish"
+[ -f "$HOME/.config/fish/conf.d/aws.local.fish" ] || cp fish/conf.d/aws.local.fish.example "$HOME/.config/fish/conf.d/aws.local.fish"
 [ -f "$HOME/.config/mise/config.local.toml" ] || printf '[tools]\nremotectl = "latest"\n' > "$HOME/.config/mise/config.local.toml"
 
 mise install
