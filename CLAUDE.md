@@ -20,7 +20,6 @@ Editing a config means editing the file in its package here; the symlink means t
 | `1Password/` | `$HOME/.config/1Password` |
 | `nvim/` | `$HOME/.config/nvim` |
 | `mise/` | `$HOME/.config/mise` |
-| `zellij/` | `$HOME/.config/zellij` |
 | `herdr/` | `$HOME/.config/herdr` |
 
 ## Rules for changes
@@ -86,8 +85,7 @@ Everything else uses LazyVim defaults (`:help LazyVim`, or `<Space>` for which-k
 
 ## Terminal & multiplexers
 
-- **Ghostty** (`ghostty/config`): Dracula, SF Mono 16pt. `Cmd+a` is unbound (freed for hyper-key combos). `Ctrl+Cmd+Alt+a` forwards `Ctrl+a` (`\x01`), which enters Zellij Normal mode.
-- **Zellij** (`zellij/config.kdl`): starts in **locked** mode; `Ctrl+a` enters Normal mode, then vim-style submodes (`p` pane, `t` tab, `s` scroll, `n` resize, `h` move, `o` session, `a` tmux-compat). `g`/`Esc` returns to locked.
+- **Ghostty** (`ghostty/config`): Dracula, SF Mono 16pt. `Cmd+a` is unbound (freed for hyper-key combos). `Ctrl+Cmd+Alt+a` forwards `Ctrl+a` (`\x01`), used as the herdr prefix.
 - **herdr** (`herdr/config.toml`): prefix `Ctrl+a`. `prefix+a`/`prefix+shift+a` next/prev agent, `prefix+t` next tab, `prefix+n` new workspace, `j`/`k` navigate workspaces, `prefix+f` fzf agent picker, `prefix+o` fzf workspace picker.
 
 ## Window management (Aerospace)

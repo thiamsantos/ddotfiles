@@ -54,7 +54,6 @@ brew "weasyprint"
 brew "wget"
 brew "wxwidgets"
 brew "yq"
-brew "zellij"
 brew "zlib"
 brew "zoxide"
 

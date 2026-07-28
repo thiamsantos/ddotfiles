@@ -7,7 +7,6 @@ Personal macOS development environment, managed with [GNU Stow](https://www.gnu.
 **Shell & terminal**
 - [Fish](https://fishshell.com/) shell — prompt, abbreviations, functions, history search (`fish/`)
 - [Ghostty](https://ghostty.org/) terminal — Dracula, SF Mono (`ghostty/`)
-- [Zellij](https://zellij.dev/) multiplexer — locked-mode, vim-style keys (`zellij/`)
 - [herdr](https://herdr.dev/) agent multiplexer (`herdr/`)
 
 **Editor**
