@@ -45,10 +45,24 @@ The setup script will:
 - Set up all dotfiles using GNU Stow
 - Configure 1Password SSH agent
 
-On first run, `setup.sh` creates local, gitignored config files from the
-committed `*.example` templates: `~/.gitconfig-work`, `~/.gitconfig-personal`,
-`~/.config/fish/conf.d/r.local.fish`, and `~/.config/mise/config.local.toml`.
-Edit those with your own values — they are never committed.
+#### Machine-local config (gitignored)
+
+Files holding machine- or work-specific values (identities, environment
+topology, AWS profile) live **in their stow package but are gitignored**, so
+stow symlinks them into place while git never tracks them. Each has a committed
+`*.example` template documenting its shape:
+
+| Gitignored file (in repo, stowed) | Template | Holds |
+|---|---|---|
+| `git/.gitconfig-work` | `git/.gitconfig-work.example` | Work git identity + signing key |
+| `git/.gitconfig-personal` | `git/.gitconfig-personal.example` | Personal git identity + signing key |
+| `fish/conf.d/r.local.fish` | `fish/conf.d/r.local.fish.example` | `r` environment definitions |
+| `fish/conf.d/aws.local.fish` | `fish/conf.d/aws.local.fish.example` | `AWS_PROFILE` / `AWS_REGION` |
+
+On a fresh clone these gitignored files don't exist yet; copy each from its
+`.example`, fill in your values, then run `setup.sh` (or re-`stow` the package)
+to symlink them. `setup.sh` also seeds `~/.config/mise/config.local.toml`
+(a standalone on-disk overlay, not stowed) for machine-local mise tools.
 
 ## 📁 Repository Structure
 

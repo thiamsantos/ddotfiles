@@ -31,6 +31,14 @@ fi
 brew upgrade
 brew bundle
 
+# Seed gitignored local config from committed .example templates, IN their stow
+# package, so the stow calls below symlink them like everything else. Never
+# overwrite an existing real file.
+[ -f git/.gitconfig-work ] || cp git/.gitconfig-work.example git/.gitconfig-work
+[ -f git/.gitconfig-personal ] || cp git/.gitconfig-personal.example git/.gitconfig-personal
+[ -f fish/conf.d/r.local.fish ] || cp fish/conf.d/r.local.fish.example fish/conf.d/r.local.fish
+[ -f fish/conf.d/aws.local.fish ] || cp fish/conf.d/aws.local.fish.example fish/conf.d/aws.local.fish
+
 stow --verbose --target=$HOME git aerospace
 stow --verbose --target="$HOME/.config/fish" fish
 stow --verbose --target="$HOME/.config/ghostty" ghostty
@@ -56,11 +64,7 @@ else
     echo "Shell setted to (homebrew) fish successefully!"
 fi
 
-# Bootstrap gitignored local config from committed .example templates (never overwrite).
-[ -f "$HOME/.gitconfig-work" ] || cp git/.gitconfig-work.example "$HOME/.gitconfig-work"
-[ -f "$HOME/.gitconfig-personal" ] || cp git/.gitconfig-personal.example "$HOME/.gitconfig-personal"
-[ -f "$HOME/.config/fish/conf.d/r.local.fish" ] || cp fish/conf.d/r.local.fish.example "$HOME/.config/fish/conf.d/r.local.fish"
-[ -f "$HOME/.config/fish/conf.d/aws.local.fish" ] || cp fish/conf.d/aws.local.fish.example "$HOME/.config/fish/conf.d/aws.local.fish"
+# Seed the standalone mise overlay (not stowed — mise reads it directly).
 [ -f "$HOME/.config/mise/config.local.toml" ] || printf '[tools]\nremotectl = "latest"\n' > "$HOME/.config/mise/config.local.toml"
 
 mise install

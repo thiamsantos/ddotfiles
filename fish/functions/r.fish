@@ -81,9 +81,6 @@ function __r_setup_env
     set -l cluster_name $argv[4]
     set -l cluster_region $argv[5]
 
-    echo "Updating remotectl..."
-    mise use --global remotectl@latest
-
     echo "Setting up $env_name environment..."
     remotectl aws login $env_name --region $region --role $role
     aws eks update-kubeconfig --name $cluster_name --region $cluster_region
