@@ -5,7 +5,7 @@ import { isInformative } from "./branch";
 import { parseWords } from "./taskname";
 
 const MODEL = "claude-haiku-4-5-20251001";
-const TIMEOUT_MS = 8000;
+export const TIMEOUT_MS = 45000;
 const LOG_CAP = 200;
 const SYSTEM_PROMPT = "You are a naming utility. Follow the users rules exactly and output nothing else.";
 
@@ -85,5 +85,33 @@ export async function threeWords(branch: string, title: string): Promise<string>
   } catch (e) {
     logFailure(`${branch}|${title}`.slice(0, 80), "spawn", String(e));
     return "";
+  }
+}
+
+// Detached entrypoint: resolves the three-word name for (entityId, kind) out-of-band.
+// Deliberately has no herdr/rename/state dependencies — Task 9 owns applying the
+// result. Callers get the words back as a return value (see the note below on why
+// this isn't Promise<void>) and, when this module is run directly (`bun run
+// src/haiku.ts <entityId> <kind> <branch> <title>`), the words are also printed to
+// stdout with exit 0, or nothing is printed and the process exits 1 on failure.
+export async function nameAndApply(
+  entityId: string,
+  kind: "agent" | "workspace",
+  branch: string,
+  title: string,
+): Promise<string> {
+  void entityId;
+  void kind;
+  return threeWords(branch, title);
+}
+
+if (import.meta.main) {
+  const [entityId, kind, branch, title] = Bun.argv.slice(2);
+  const words = await nameAndApply(entityId ?? "", (kind as "agent" | "workspace") ?? "agent", branch ?? "", title ?? "");
+  if (words) {
+    console.log(words);
+    process.exit(0);
+  } else {
+    process.exit(1);
   }
 }
