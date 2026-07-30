@@ -1,0 +1,31 @@
+# herdr-autoname/herdr-plugin.toml
+id = "thiamsantos.autoname"
+name = "Autoname"
+version = "0.1.0"
+description = "Auto-rename tabs by repo + running processes, and agents/workspaces by a three-word Haiku summary of branch + Claude session title"
+min_herdr_version = "0.7.5"
+platforms = ["macos", "linux"]
+
+[[events]]
+on = "pane.agent_detected"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "pane.focused"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "pane.exited"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "workspace.focused"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "worktree.created"
+command = ["bun", "run", "src/hook.ts"]
