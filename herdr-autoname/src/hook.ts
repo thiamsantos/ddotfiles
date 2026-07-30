@@ -2,19 +2,34 @@
 import { repoToken } from "./repo";
 import { displayProcs, type PaneProc } from "./procs";
 import { tabLabel } from "./tabname";
-import { agentLabel, workspaceLabel } from "./taskname";
+import { agentLabel, workspaceLabel, agentSlug } from "./taskname";
 import { readBranch } from "./branch";
 import { snapshot, paneProcs, renameTab, renameAgent, renameWorkspace, type Snapshot } from "./herdr";
 import { readEntry, writeEntry, shouldRename } from "./state";
 import { threeWords } from "./haiku";
 
-function pickFocused<T extends { focused?: boolean; pane_id: string }>(panes: T[], focusedId?: string): T | null {
+// Picks the pane whose cwd determines a tab's repo token. `focusedPaneId` is
+// the session's GLOBAL focus — it only counts here when it names a pane that
+// actually belongs to this tab's `panes` list (checked via `find`, which is
+// tab-scoped by construction). If global focus is elsewhere (or no pane in
+// this tab reports `focused: true`), the fallback MUST NOT depend on global
+// focus at all: sort this tab's own panes by `pane_id` and take the first.
+// That sort/tiebreak must stay order-stable across calls — otherwise the same
+// tab's repo token flickers between unrelated repos as focus moves around
+// *other* tabs/workspaces, which is exactly the instability this exists to
+// avoid (see live finding: w1:t1 flipped tiger/dragon while focus was on
+// w2:p4, outside the tab entirely).
+export function pickTabPane<T extends { focused?: boolean; pane_id: string }>(
+  panes: T[],
+  focusedPaneId?: string,
+): T | null {
   if (!panes.length) return null;
-  const byId = focusedId ? panes.find((p) => p.pane_id === focusedId) : null;
+  const sorted = [...panes].sort((a, b) => a.pane_id.localeCompare(b.pane_id));
+  const byId = focusedPaneId ? sorted.find((p) => p.pane_id === focusedPaneId) : null;
   if (byId) return byId;
-  const flagged = panes.find((p) => p.focused);
+  const flagged = sorted.find((p) => p.focused);
   if (flagged) return flagged;
-  return [...panes].sort((a, b) => a.pane_id.localeCompare(b.pane_id))[0];
+  return sorted[0];
 }
 
 async function renameTabFor(snap: Snapshot, tabId: string): Promise<void> {
@@ -23,7 +38,7 @@ async function renameTabFor(snap: Snapshot, tabId: string): Promise<void> {
   const panes = snap.panes.filter((p) => p.tab_id === tabId);
   if (!panes.length) return;
 
-  const focused = pickFocused(panes, snap.focused_pane_id);
+  const focused = pickTabPane(panes, snap.focused_pane_id);
   const repo = repoToken(focused?.foreground_cwd || focused?.cwd);
 
   const procs: PaneProc[] = [];
@@ -53,7 +68,7 @@ async function scheduleTaskNaming(snap: Snapshot, paneId: string): Promise<void>
   if (!branch && !title) return;
 
   // Gate BEFORE spawning, so an unchanged status flip costs nothing.
-  const decision = shouldRename(readEntry(paneId), branch, title, agent.label ?? "");
+  const decision = shouldRename(readEntry(paneId), branch, title, agent.name ?? "");
   if (!decision.act) return;
 
   const proc = Bun.spawn(["bun", "run", "src/hook.ts", "--name", paneId], {
@@ -77,18 +92,21 @@ async function renameTaskEntities(snap: Snapshot, paneId: string): Promise<void>
   if (!branch && !title) return;
 
   const prevAgent = readEntry(paneId);
-  const decision = shouldRename(prevAgent, branch, title, agent.label ?? "");
+  const decision = shouldRename(prevAgent, branch, title, agent.name ?? "");
   if (!decision.act) return;
 
   const words = await threeWords(branch, title);
   const stale = words === "";
   const useWords = words || prevAgent?.lastGoodWords || "";
 
+  // herdr agent rename requires a lowercase-start [a-z0-9_-]{1,32} name, unlike
+  // the space-separated label used for workspaces — slugify only this path.
   const aLabel = agentLabel(useWords, stale);
-  if (aLabel) {
-    await renameAgent(paneId, aLabel);
+  const aSlug = agentSlug(aLabel);
+  if (aSlug) {
+    await renameAgent(paneId, aSlug);
     if (!stale) {
-      writeEntry(paneId, { branch, title, applied: aLabel, lastGoodWords: useWords });
+      writeEntry(paneId, { branch, title, applied: aSlug, lastGoodWords: useWords });
     }
   }
 
@@ -133,7 +151,10 @@ async function main(): Promise<void> {
 }
 
 // Always exit 0 so herdr never logs plugin failures on transient errors.
-main().then(
-  () => process.exit(0),
-  () => process.exit(0),
-);
+// Guarded so importing this module (e.g. from tests) doesn't run the hook.
+if (import.meta.main) {
+  main().then(
+    () => process.exit(0),
+    () => process.exit(0),
+  );
+}
