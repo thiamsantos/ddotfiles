@@ -49,6 +49,9 @@ stow --verbose --target="$HOME/.config/herdr" herdr
 
 # Deploy Claude skills (copy into ~/.claude/skills; not stowed).
 ./claude/install-skills.sh
+
+# Link the herdr autoname plugin (requires a running herdr server).
+./herdr-autoname/install.sh
 ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose "$HOME/.docker/cli-plugins/docker-compose"
 ln -sfn /opt/homebrew/opt/docker-buildx/bin/docker-buildx "$HOME/.docker/cli-plugins/docker-buildx"
 

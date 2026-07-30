@@ -63,6 +63,20 @@ The script also removes retired skills (`tuicr`, `review-plan-tuicr`).
   `fetch_review_queue.py` (one GraphQL call) and `list_worktrees.py` (finds free
   `work-n` worktrees under `employ_workspace`). Never posts to an MR itself.
 
+## herdr plugins
+
+`herdr-autoname/` is a herdr plugin (TypeScript on Bun, no build step) linked
+via `herdr-autoname/install.sh`, which `setup.sh` runs after the skills
+install. It renames tabs to `[N] <repo> <procs>` instantly (no LLM — just the
+worktree repo name and running processes), and renames agents to a
+three-word Haiku summary and workspaces to `<label> - <three words>`. Haiku
+calls (`claude -p`, 12-28s typical) run as a detached background process so
+the hook itself stays fast; the rename lands ~24s later, and a 45s timeout
+falls back to the last good name with a `…` marker. Branch detection is
+read-only — it never rewrites git branches. State and the Haiku error log
+live in `~/.local/state/herdr/plugins/thiamsantos.autoname/`. Run `bun test`
+in the plugin dir after editing.
+
 ## Git config
 
 `~/.gitconfig` uses `includeIf` to swap identity by directory:
