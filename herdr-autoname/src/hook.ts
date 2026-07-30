@@ -32,11 +32,35 @@ export function pickTabPane<T extends { focused?: boolean; pane_id: string }>(
   return sorted[0];
 }
 
+// `tab.number` is a persistent, gap-riddled id (e.g. a workspace's tabs can be
+// numbered 2, 5 after earlier tabs were closed) — NOT the tab's visual
+// position. herdr has no numeric tab-jump keybinding (only a fuzzy `goto`
+// picker), so the "[N]" the user sees must be the 1-based position within the
+// tab's own workspace, not `tab.number` itself. `snap.tabs` is already
+// grouped by workspace and returned in ascending display order (confirmed
+// against the live snapshot: w1's tabs come back as t1,t3,t4,t6,t7, w2's as
+// t2,t5) — so position is derived from that array's own order rather than by
+// re-sorting `tab_id` strings, which would corrupt double-digit ids (a
+// lexicographic sort puts "t10" before "t3").
+export function tabPosition(
+  tabs: Array<{ tab_id: string; workspace_id: string; number?: number }>,
+  tabId: string,
+): number {
+  const target = tabs.find((t) => t.tab_id === tabId);
+  if (!target) return 0;
+  const siblings = tabs.filter((t) => t.workspace_id === target.workspace_id);
+  const idx = siblings.findIndex((t) => t.tab_id === tabId);
+  return idx === -1 ? 0 : idx + 1;
+}
+
 async function renameTabFor(snap: Snapshot, tabId: string): Promise<void> {
   const tab = snap.tabs.find((t) => t.tab_id === tabId);
   if (!tab) return;
   const panes = snap.panes.filter((p) => p.tab_id === tabId);
   if (!panes.length) return;
+
+  const position = tabPosition(snap.tabs, tabId);
+  if (!position) return; // tab vanished between lookup and here — skip rather than emit "[0]"
 
   const focused = pickTabPane(panes, snap.focused_pane_id);
   const repo = repoToken(focused?.foreground_cwd || focused?.cwd);
@@ -52,7 +76,7 @@ async function renameTabFor(snap: Snapshot, tabId: string): Promise<void> {
     });
   }
 
-  const label = tabLabel(tab.number, repo, displayProcs(procs));
+  const label = tabLabel(position, repo, displayProcs(procs));
   if (label && label !== tab.label) await renameTab(tabId, label);
 }
 
