@@ -53,6 +53,15 @@ The script also removes retired skills (`tuicr`, `review-plan-tuicr`).
   flows (superpowers plan/spec, current-branch diff, GitLab MR), waits for the
   human, then reads their comments back via the session JSON path. Thin wrapper
   over the `herdr-tuicr-review` fish function; requires an active herdr session.
+- `review-queue` — lists the open GitLab MRs where I'm a requested reviewer,
+  split into four sections (nobody reviewed / approved by someone else / draft /
+  already reviewed by me), oldest activity first, then asks which one to review
+  via `AskUserQuestion`. After the pick it ramps into the review: MR description
+  (why/how), linked Linear ticket, a code summary, a
+  `superpowers:requesting-code-review` pass over the MR's `diff_refs` SHA range,
+  then `herdr-review` for annotation. Two scripts —
+  `fetch_review_queue.py` (one GraphQL call) and `list_worktrees.py` (finds free
+  `work-n` worktrees under `employ_workspace`). Never posts to an MR itself.
 
 ## Git config
 

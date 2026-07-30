@@ -1,3 +1,4 @@
+onboarding = false
 # herdr configuration
 # https://herdr.dev/docs/configuration/
 
@@ -17,8 +18,11 @@ navigate_workspace_down = "j"
 next_agent = "prefix+a"
 previous_agent = "prefix+shift+a"
 
-next_tab = "prefix+t"
-new_workspace = "prefix+n"
+new_tab = "prefix+t"
+rename_tab = "prefix+shift+t"
+
+new_workspace = "prefix+s"
+rename_workspace = "prefix+shift+s"
 
 [[keys.command]]
 key = "prefix+f"
@@ -35,4 +39,3 @@ command = "fish -c herdr-pick-workspace"
 description = "fuzzy pick workspace (fzf)"
 width = "90%"
 height = "85%"
-
