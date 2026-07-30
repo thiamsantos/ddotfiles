@@ -1,11 +1,13 @@
 import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 import { isInformative } from "./branch";
 import { parseWords } from "./taskname";
 
 const MODEL = "claude-haiku-4-5-20251001";
 const TIMEOUT_MS = 8000;
 const LOG_CAP = 200;
+const SYSTEM_PROMPT = "You are a naming utility. Follow the users rules exactly and output nothing else.";
 
 export function buildPrompt(branch: string, title: string): string {
   const signals = [
@@ -44,12 +46,27 @@ export function logFailure(entity: string, code: number | string, stderr: string
   }
 }
 
+export function claudeArgs(prompt: string): string[] {
+  return [
+    "claude",
+    "-p",
+    "--model",
+    MODEL,
+    "--system-prompt",
+    SYSTEM_PROMPT,
+    "--setting-sources",
+    "",
+    prompt,
+  ];
+}
+
 export async function threeWords(branch: string, title: string): Promise<string> {
   if (!isInformative(branch) && !title) return "";
   try {
-    const p = Bun.spawn(["claude", "-p", "--model", MODEL, buildPrompt(branch, title)], {
+    const p = Bun.spawn(claudeArgs(buildPrompt(branch, title)), {
       stdout: "pipe",
       stderr: "pipe",
+      cwd: tmpdir(),
     });
     const timer = setTimeout(() => p.kill(), TIMEOUT_MS);
     const out = await new Response(p.stdout).text();
