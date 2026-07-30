@@ -2,11 +2,11 @@
 import { repoToken } from "./repo";
 import { displayProcs, type PaneProc } from "./procs";
 import { tabLabel } from "./tabname";
-import { agentLabel, workspaceLabel, agentSlug } from "./taskname";
+import { agentLabel, workspaceLabel, agentSlug, hyphenate } from "./taskname";
 import { readBranch } from "./branch";
 import { snapshot, paneProcs, renameTab, renameAgent, renameWorkspace, type Snapshot } from "./herdr";
 import { readEntry, writeEntry, shouldRename } from "./state";
-import { threeWords } from "./haiku";
+import { taskWords } from "./haiku";
 
 // Picks the pane whose cwd determines a tab's repo token. `focusedPaneId` is
 // the session's GLOBAL focus — it only counts here when it names a pane that
@@ -119,13 +119,19 @@ async function renameTaskEntities(snap: Snapshot, paneId: string): Promise<void>
   const decision = shouldRename(prevAgent, branch, title, agent.name ?? "");
   if (!decision.act) return;
 
-  const words = await threeWords(branch, title);
+  const words = await taskWords(branch, title);
   const stale = words === "";
   const useWords = words || prevAgent?.lastGoodWords || "";
+  // Both entities' generated words are hyphenated (e.g. "au jsfopts" ->
+  // "au-jsfopts"); the " - " prefix separator and the stale " …" marker are
+  // NOT part of the hyphenated words, so they're applied by agentLabel/
+  // workspaceLabel around the already-hyphenated string, not folded into it.
+  const hyphenated = hyphenate(useWords);
 
-  // herdr agent rename requires a lowercase-start [a-z0-9_-]{1,32} name, unlike
-  // the space-separated label used for workspaces — slugify only this path.
-  const aLabel = agentLabel(useWords, stale);
+  // herdr agent rename ALSO requires a lowercase-start [a-z0-9_-]{1,32} name
+  // (stricter than workspace.rename) — agentSlug layers that on top of the
+  // same hyphenate() core used for workspaces, rather than duplicating it.
+  const aLabel = agentLabel(hyphenated, stale);
   const aSlug = agentSlug(aLabel);
   if (aSlug) {
     await renameAgent(paneId, aSlug);
@@ -143,8 +149,12 @@ async function renameTaskEntities(snap: Snapshot, paneId: string): Promise<void>
   if (!wsDecision.act) return;
 
   // A workspace label must not accumulate its own prefix across renames.
+  // Splitting on " - " still correctly isolates "work-1" even though the
+  // words themselves now contain hyphens, because the prefix separator is
+  // " - " (space-hyphen-space) while hyphenated words never contain a space —
+  // e.g. "work-1 - au-jsfopts".split(" - ") -> ["work-1", "au-jsfopts"].
   const base = (ws.label ?? "").split(" - ")[0].replace(/\s*…$/, "");
-  const wLabel = workspaceLabel(base, useWords, stale);
+  const wLabel = workspaceLabel(base, hyphenated, stale);
   await renameWorkspace(ws.workspace_id, wLabel);
   if (!stale) {
     writeEntry(ws.workspace_id, { branch, title, applied: wLabel, lastGoodWords: useWords });

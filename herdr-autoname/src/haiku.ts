@@ -60,7 +60,7 @@ export function claudeArgs(prompt: string): string[] {
   ];
 }
 
-export async function threeWords(branch: string, title: string): Promise<string> {
+export async function taskWords(branch: string, title: string): Promise<string> {
   if (!isInformative(branch) && !title) return "";
   try {
     const p = Bun.spawn(claudeArgs(buildPrompt(branch, title)), {
@@ -102,7 +102,7 @@ export async function nameAndApply(
 ): Promise<string> {
   void entityId;
   void kind;
-  return threeWords(branch, title);
+  return taskWords(branch, title);
 }
 
 if (import.meta.main) {

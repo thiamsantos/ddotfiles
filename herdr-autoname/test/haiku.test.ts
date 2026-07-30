@@ -43,7 +43,7 @@ test("timeout is raised to accommodate real claude -p latency (median ~23.6s obs
 });
 
 test("nameAndApply is a thin async delegation with the documented signature", () => {
-  // nameAndApply resolves via threeWords(branch, title) and is deliberately
+  // nameAndApply resolves via taskWords(branch, title) and is deliberately
   // insensitive to entityId/kind for word generation (Task 9 uses those to
   // apply the result, not to influence naming). Verified without spawning a
   // real LLM call: same-signature check plus the CLI subprocess tests below
