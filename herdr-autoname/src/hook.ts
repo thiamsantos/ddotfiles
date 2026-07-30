@@ -4,7 +4,7 @@ import { displayProcs, type PaneProc } from "./procs";
 import { tabLabel } from "./tabname";
 import { agentLabel, workspaceLabel } from "./taskname";
 import { readBranch } from "./branch";
-import { snapshot, paneProcName, renameTab, renameAgent, renameWorkspace, type Snapshot } from "./herdr";
+import { snapshot, paneProcs, renameTab, renameAgent, renameWorkspace, type Snapshot } from "./herdr";
 import { readEntry, writeEntry, shouldRename } from "./state";
 import { threeWords } from "./haiku";
 
@@ -29,11 +29,10 @@ async function renameTabFor(snap: Snapshot, tabId: string): Promise<void> {
   const procs: PaneProc[] = [];
   for (const p of [...panes].sort((a, b) => a.pane_id.localeCompare(b.pane_id))) {
     const agent: string | null = p.agent ?? null;
-    const resolved = agent ? null : await paneProcName(p.pane_id);
     procs.push({
       paneId: p.pane_id,
       agent,
-      procs: resolved ? [{ argv0: resolved, name: resolved }] : [],
+      procs: agent ? [] : await paneProcs(p.pane_id),
       termTitle: p.terminal_title_stripped ?? null,
     });
   }

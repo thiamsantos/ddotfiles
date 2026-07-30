@@ -42,6 +42,19 @@ export async function paneProcName(paneId: string): Promise<string | null> {
   return Array.isArray(fps) && fps.length ? (fps[0].name ?? null) : null;
 }
 
+export type PaneProcInfo = { argv0: string | null; name: string | null };
+
+export function mapForegroundProcesses(result: any): PaneProcInfo[] {
+  const fps = result?.process_info?.foreground_processes;
+  if (!Array.isArray(fps)) return [];
+  return fps.map((p) => ({ argv0: p?.argv0 ?? null, name: p?.name ?? null }));
+}
+
+export async function paneProcs(paneId: string): Promise<PaneProcInfo[]> {
+  const r = unwrap(await run(["pane", "process-info", "--pane", paneId]));
+  return mapForegroundProcesses(r);
+}
+
 export async function renameTab(tabId: string, label: string): Promise<void> {
   await run(["tab", "rename", tabId, label]);
 }
