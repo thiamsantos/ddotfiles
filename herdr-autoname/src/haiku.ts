@@ -16,7 +16,7 @@ export function buildPrompt(branch: string, title: string): string {
   ].filter(Boolean).join(" ");
 
   return [
-    "Name this work item in AT MOST three lowercase words for a narrow terminal sidebar.",
+    "Name this work item in AT MOST two lowercase words for a narrow terminal sidebar.",
     "",
     "Rules:",
     "- Abbreviate to save space. Use ISO country codes (australia->au, netherlands->nl, philippines->ph) and common dev abbreviations (production->prod, description->desc, configuration->config, options->opts, repository->repo).",
@@ -24,8 +24,8 @@ export function buildPrompt(branch: string, title: string): string {
     "- Keep recognizable project/system names intact rather than clipping them to fragments. Prefer exjsflow over exjs.",
     "- The branch is authoritative for WHAT the work is. The title reflects the CURRENT step.",
     "- Fix typos in the branch (philipines -> ph).",
-    "- Keep the single most distinguishing token (country, subsystem, ticket topic).",
-    "- Output ONLY the three words. No punctuation, no explanation, no numbering.",
+    "- With only two words available, the single most distinguishing token (country, subsystem, ticket topic) matters more than ever — always keep it, and drop generic verbs like migrate/update/review before you'd drop it. That distinguishing token is what keeps otherwise-similar work (e.g. au jsfopts vs nl jsfopts vs ph jsfopts) tellable apart.",
+    "- Output ONLY the two words. No punctuation, no explanation, no numbering.",
     "",
     signals,
   ].join("\n");
@@ -88,7 +88,7 @@ export async function threeWords(branch: string, title: string): Promise<string>
   }
 }
 
-// Detached entrypoint: resolves the three-word name for (entityId, kind) out-of-band.
+// Detached entrypoint: resolves the two-word name for (entityId, kind) out-of-band.
 // Deliberately has no herdr/rename/state dependencies — Task 9 owns applying the
 // result. Callers get the words back as a return value (see the note below on why
 // this isn't Promise<void>) and, when this module is run directly (`bun run

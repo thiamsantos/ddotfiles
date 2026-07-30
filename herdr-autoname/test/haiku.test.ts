@@ -21,9 +21,9 @@ test("prompt carries the two load-bearing rules", () => {
   expect(p).toContain("intact");
 });
 
-test("prompt asks for at most three lowercase words", () => {
+test("prompt asks for at most two lowercase words", () => {
   const p = buildPrompt("b-1-x", "t");
-  expect(p).toContain("three");
+  expect(p).toContain("two");
 });
 
 test("claude invocation is isolated from ambient project context", () => {
@@ -53,6 +53,9 @@ test("nameAndApply is a thin async delegation with the documented signature", ()
 });
 
 test("CLI entrypoint prints the words and exits 0 on success", async () => {
+  // Fixture deliberately still emits 3 words ("fake three words") to prove the
+  // end-to-end path truncates to WORD_COUNT (2) rather than trusting the model's
+  // arity — this is the new regression risk introduced by the word-count change.
   const fixtureDir = `${import.meta.dir}/fixtures/claude-ok`;
   const env = { ...process.env, PATH: `${fixtureDir}:${process.env.PATH}` };
   const proc = Bun.spawn(
@@ -62,7 +65,7 @@ test("CLI entrypoint prints the words and exits 0 on success", async () => {
   const out = await new Response(proc.stdout).text();
   const code = await proc.exited;
   expect(code).toBe(0);
-  expect(out.trim()).toBe("fake three words");
+  expect(out.trim()).toBe("fake three");
 });
 
 test("CLI entrypoint exits 1 when generation yields nothing", async () => {

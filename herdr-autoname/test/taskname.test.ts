@@ -3,27 +3,28 @@ import { test, expect } from "bun:test";
 import { parseWords, agentLabel, workspaceLabel, agentSlug } from "../src/taskname";
 
 test("strips both N: and N. index prefixes", () => {
-  expect(parseWords("1: au jsfoptions schema")).toBe("au jsfoptions schema");
-  expect(parseWords("1. au jsfoptions schema")).toBe("au jsfoptions schema");
-  expect(parseWords("au jsfoptions schema")).toBe("au jsfoptions schema");
+  expect(parseWords("1: au jsfopts")).toBe("au jsfopts");
+  expect(parseWords("1. au jsfopts")).toBe("au jsfopts");
+  expect(parseWords("au jsfopts")).toBe("au jsfopts");
 });
 
-test("hard-truncates to three words", () => {
-  // Real observed 4-word reply.
-  expect(parseWords("jsfoptions json schema migration")).toBe("jsfoptions json schema");
+test("hard-truncates to two words", () => {
+  // Real observed 3+-word replies — never trust the model's arity.
+  expect(parseWords("au jsfopts migrate")).toBe("au jsfopts");
+  expect(parseWords("jsfoptions json schema migration")).toBe("jsfoptions json");
 });
 
 test("lowercases, strips punctuation, collapses whitespace", () => {
-  expect(parseWords("AU  JSFOptions,  Schema!")).toBe("au jsfoptions schema");
-  expect(parseWords("exjsflow prod rollout.")).toBe("exjsflow prod rollout");
+  expect(parseWords("AU  JSFOpts!")).toBe("au jsfopts");
+  expect(parseWords("exjsflow prod.")).toBe("exjsflow prod");
 });
 
 test("keeps internal hyphens", () => {
-  expect(parseWords("herdr auto-rename tabs")).toBe("herdr auto-rename tabs");
+  expect(parseWords("herdr auto-rename")).toBe("herdr auto-rename");
 });
 
 test("uses the first non-empty line and ignores noise", () => {
-  expect(parseWords("\n\n1: nl jsfoptions schema\n2: something else")).toBe("nl jsfoptions schema");
+  expect(parseWords("\n\n1: nl jsfopts\n2: something else")).toBe("nl jsfopts");
 });
 
 test("returns empty string for unusable replies", () => {
@@ -33,16 +34,16 @@ test("returns empty string for unusable replies", () => {
 });
 
 test("agent label is the bare words", () => {
-  expect(agentLabel("au jsfoptions schema", false)).toBe("au jsfoptions schema");
+  expect(agentLabel("au jsfopts", false)).toBe("au jsfopts");
 });
 
 test("workspace label prefixes the workspace name", () => {
-  expect(workspaceLabel("work-1", "au jsfoptions schema", false)).toBe("work-1 - au jsfoptions schema");
+  expect(workspaceLabel("work-1", "au jsfopts", false)).toBe("work-1 - au jsfopts");
 });
 
 test("stale marker appends ellipsis, keeping last good words", () => {
-  expect(agentLabel("au jsfoptions schema", true)).toBe("au jsfoptions schema …");
-  expect(workspaceLabel("work-1", "au jsfoptions schema", true)).toBe("work-1 - au jsfoptions schema …");
+  expect(agentLabel("au jsfopts", true)).toBe("au jsfopts …");
+  expect(workspaceLabel("work-1", "au jsfopts", true)).toBe("work-1 - au jsfopts …");
 });
 
 test("stale with no prior words yields a bare marker", () => {
@@ -51,16 +52,16 @@ test("stale with no prior words yields a bare marker", () => {
 });
 
 test("agentSlug turns space-separated words into a valid herdr agent name", () => {
-  expect(agentSlug("au jsfoptions migrate")).toBe("au-jsfoptions-migrate");
+  expect(agentSlug("au jsfopts")).toBe("au-jsfopts");
 });
 
 test("agentSlug lowercases and strips punctuation before slugging", () => {
-  expect(agentSlug("Au  JSFOptions,  Migrate!")).toBe("au-jsfoptions-migrate");
+  expect(agentSlug("Au  JSFOpts!")).toBe("au-jsfopts");
 });
 
 test("agentSlug drops the stale ellipsis marker without leaking it", () => {
   // Real caller: agentSlug(agentLabel(words, stale)).
-  expect(agentSlug(agentLabel("au jsfoptions migrate", true))).toBe("au-jsfoptions-migrate");
+  expect(agentSlug(agentLabel("au jsfopts", true))).toBe("au-jsfopts");
 });
 
 test("agentSlug on a bare stale marker (no prior words) yields empty — caller must skip the rename", () => {

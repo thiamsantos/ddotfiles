@@ -1,5 +1,6 @@
 // herdr-autoname/src/taskname.ts
 export const STALE = "…";
+export const WORD_COUNT = 2;
 
 export function parseWords(reply: string): string {
   const line = (reply ?? "")
@@ -13,7 +14,7 @@ export function parseWords(reply: string): string {
     .replace(/[^a-z0-9\s-]/g, " ")
     .split(/\s+/)
     .filter((w) => w && w !== "-")
-    .slice(0, 3)
+    .slice(0, WORD_COUNT)
     .join(" ");
 }
 
