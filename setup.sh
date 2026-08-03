@@ -52,6 +52,10 @@ stow --verbose --target="$HOME/.config/herdr" herdr
 
 # Link the herdr autoname plugin (requires a running herdr server).
 ./herdr-autoname/install.sh
+
+# Install the third-party herdr-resurrect plugin and seed its config.
+./herdr-resurrect/install.sh
+
 ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose "$HOME/.docker/cli-plugins/docker-compose"
 ln -sfn /opt/homebrew/opt/docker-buildx/bin/docker-buildx "$HOME/.docker/cli-plugins/docker-buildx"
 
