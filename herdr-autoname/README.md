@@ -5,8 +5,9 @@ Auto-renames herdr tabs, agents, and workspaces.
 | Entity | Format | Example |
 |---|---|---|
 | Tab | `[N] <repo> <proc> / <proc>` | `[1] tiger iex / pnpm` |
-| Tab (single proc) | `[N] <repo> <proc>` | `[3] tiger vim / claude` |
+| Tab (single proc) | `[N] <repo> <proc>` | `[2] dotfiles claude` |
 | Tab (idle) | `[N] <repo>` | `[4] dragon` |
+| Tab (no repo) | `[N] <proc>` | `[7] claude` |
 | Agent | `<two hyphenated words>` | `au-jsfopts` |
 | Workspace | `<label> - <two hyphenated words>` | `work-1 - au-jsfopts` |
 
