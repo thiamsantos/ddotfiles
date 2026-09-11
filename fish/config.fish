@@ -5,6 +5,8 @@ set -gx CLAUDE_CODE_REMOTE_SEND_KEEPALIVES true
 set -gx BUN_CONFIG_HTTP_IDLE_TIMEOUT 300
 set -gx BUN_CONFIG_HTTP_RETRY_COUNT 3
 set -gx NODE_OPTIONS "--dns-result-order=ipv4first"
+set -gx ANTHROPIC_DEFAULT_OPUS_MODEL claude-opus-4-8
+set -gx ANTHROPIC_MODEL claude-opus-4-8
 
 fish_add_path /opt/workbrew/bin
 fish_add_path /opt/homebrew/opt/libpq/bin
@@ -26,3 +28,10 @@ bind \cw backward-kill-word
 bind \cc cancel-commandline
 
 alias vim="nvim"
+
+# pnpm
+set -gx PNPM_HOME "/Users/thiago.santos/Library/pnpm"
+if not string match -q -- "$PNPM_HOME/bin" $PATH
+  set -gx PATH "$PNPM_HOME/bin" $PATH
+end
+# pnpm end
