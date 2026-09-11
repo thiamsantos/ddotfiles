@@ -53,17 +53,10 @@ Skills are in `claude/skills/<name>/`. `claude/install-skills.sh` **copies** the
 - `herdr-review` — opens a tuicr review in a half-width herdr pane for three
   flows: a superpowers plan or spec, the current-branch diff, and a GitLab MR.
   It waits for the human, then reads their comments from the session JSON path.
-  It is a thin wrapper over the `herdr-tuicr-review` fish function. It requires
-  an active herdr session.
-- `review-queue` — lists the open GitLab MRs where I am a requested reviewer. It
-  splits them into four sections: nobody reviewed, approved by someone else,
-  draft, and already reviewed by me. The oldest activity comes first. It then
-  asks which MR to review with `AskUserQuestion`. After the choice it starts the
-  review: the MR description (why and how), the linked Linear ticket, a code
-  summary, a `superpowers:requesting-code-review` pass over the MR `diff_refs`
-  SHA range, then `herdr-review` for annotation. It has two scripts:
-  `fetch_review_queue.py` (one GraphQL call) and `list_worktrees.py` (finds free
-  `work-n` worktrees under `employ_workspace`). It never posts to an MR.
+  It requires an active herdr session. The pane mechanics live in the bundled
+  launcher `references/herdr-tuicr-review.py`; the skill runs it by absolute
+  path (`~/.claude/skills/herdr-review/references/herdr-tuicr-review.py`), not
+  from `PATH`.
 
 ## herdr plugins
 
@@ -113,10 +106,6 @@ Both included files are Stow symlinks to the gitignored `git/.gitconfig-personal
   - `herdr-pick-agent` and `herdr-pick-workspace` — fzf pickers bound to herdr
     popups.
   - `search_history` — fzf history search, bound to `Ctrl+r`.
-  - `herdr-tuicr-review` — opens a tuicr review in a half-width herdr split,
-    blocks until the human closes it, then prints the resolved session as a slug
-    and a JSON path. It backs the `herdr-review` skill. Session resolution is in
-    the sibling script `herdr-tuicr-resolve-session.py`.
 - **Keybinds** (`fish/config.fish`): `Ctrl+f` and `Ctrl+b` move by word, `Ctrl+w` kills the word before the cursor, `Ctrl+c` cancels the line, `Ctrl+r` searches the history. `vim` is an alias for `nvim`.
 
 ## Neovim
