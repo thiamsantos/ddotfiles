@@ -1,8 +1,8 @@
 ---
 name: mr-description
-description: Write or rewrite a GitLab MR description for Thiago using his MR template. Use to write, draft, improve, or fill an MR description in any repo.
+description: Write or rewrite a GitLab MR description using my MR template. Use to write, draft, improve, or fill an MR description in any repo.
 ---
-# MR Description (Thiago's format)
+# MR Description
 
 Write descriptions a reviewer reads top-to-bottom in under a minute: outcome first, then technical points that need attention.
 
