@@ -56,6 +56,9 @@ stow --verbose --target="$HOME/.config/herdr" herdr
 # Install the third-party herdr-resurrect plugin and seed its config.
 ./herdr-resurrect/install.sh
 
+# Install the third-party herdr-caffeinate plugin.
+./herdr-caffeinate/install.sh
+
 ln -sfn /opt/homebrew/opt/docker-compose/bin/docker-compose "$HOME/.docker/cli-plugins/docker-compose"
 ln -sfn /opt/homebrew/opt/docker-buildx/bin/docker-buildx "$HOME/.docker/cli-plugins/docker-buildx"
 

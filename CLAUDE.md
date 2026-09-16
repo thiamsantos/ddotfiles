@@ -85,6 +85,12 @@ The snapshots and `last.json` are in `~/.local/state/herdr/plugins/ntindle.herdr
 
 Gotcha: if you run the plugin scripts manually, for example `node bin/restore.js`, the plugin reads the config from `~/.config/herdr-resurrect/` and **not** from the real directory. herdr normally sets `HERDR_PLUGIN_CONFIG_DIR`. You must set that variable yourself when you run a script directly. If you do not set it, the empty allowlist and the `autoRestore` setting have no effect.
 
+`herdr-caffeinate/` holds only an `install.sh`. The plugin is third-party ([nwarwick/herdr-caffeinate](https://github.com/nwarwick/herdr-caffeinate)). `setup.sh` installs it from the marketplace, and herdr pins it to the resolved commit. The plugin holds macOS idle system sleep open while any herdr agent is `working`. It runs `/usr/bin/caffeinate -i` and releases the assertion 30 seconds after the last agent stops. The display still sleeps.
+
+Like `herdr-resurrect`, the script is deliberately **not** in the `herdr/` stow package: it is not config.
+
+The plugin needs no config. Every `settings.conf` value (`idle_grace_seconds`, `poll_interval_seconds`, `request_timeout_seconds`) is optional, so `install.sh` seeds nothing. To override a default, create `settings.conf` in the dir that `herdr plugin config-dir herdr-caffeinate` prints. herdr resolves the installed plugin id to `herdr-caffeinate`, not `nwarwick.herdr-caffeinate`; the installer's idempotency check matches that id. The plugin has no keybindings.
+
 ## Git config
 
 `~/.gitconfig` uses `includeIf` to select the identity by directory:
