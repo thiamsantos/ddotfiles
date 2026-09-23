@@ -32,8 +32,9 @@ This skill produces only the description text and, on explicit confirmation, wri
 3. **Write** Summary, Why, What changed into the template. Fill the `## What changed` details block.
 4. **Related Resources**: Linear ticket (always, if any), Slack threads, related MRs.
 5. **Screenshots**: keep the block for UI changes and say which to attach (you can't produce them); delete it otherwise.
-6. **Plain language**: run `Skill(plain-language-writing)` over the prose. Required. Apply edits, then deliver.
-7. **Deliver**: print the body; batch one question for what you can't infer (flag name, paired MR, screenshots, Slack thread) — never what the diff answers. If an MR exists, ask **"Update MR !<n> now?"** Only on explicit yes:
+6. **Plain language**: run `Skill(plain-language-writing)` over the prose. Required. Apply edits.
+7. **Unslop**: run `Skill(unslop)` in `cleanup` mode over the prose. Required. Leave identifiers, links, and template headings untouched; stay within the word limits. Apply edits, then deliver.
+8. **Deliver**: print the body; batch one question for what you can't infer (flag name, paired MR, screenshots, Slack thread) — never what the diff answers. If an MR exists, ask **"Update MR !<n> now?"** Only on explicit yes:
    ```bash
    glab mr update <n> --description "$(cat <body-file>)"   # body to temp file first
    ```
