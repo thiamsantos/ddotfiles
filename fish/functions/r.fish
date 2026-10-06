@@ -114,7 +114,7 @@ function __r_execute_cmd
                 remotectl k8s shell $service --region $region -e $env_name --role $role --login --use-context -- $release_bin remote
             else
                 echo "Starting IEx shell on $env_name..."
-                remotectl k8s shell $pod -m 4Gi --region $region -e $env_name --role $role --login --use-context -- $release_bin start_iex
+                remotectl k8s shell $pod -m 8Gi --region $region -e $env_name --role $role --login --use-context -- $release_bin start_iex
             end
         case get-param
             set -l ssm_path "/$env_name/$service/$param_name"
