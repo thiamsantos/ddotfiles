@@ -5,6 +5,9 @@ onboarding = false
 [theme]
 name = "dracula"
 
+[ui]
+mouse_capture = false
+
 [terminal]
 default_shell = "/opt/homebrew/bin/fish"
 new_cwd = "follow"
