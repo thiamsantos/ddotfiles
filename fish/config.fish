@@ -16,6 +16,7 @@ fish_add_path /opt/homebrew/opt/icu4c/bin
 fish_add_path "$HOME/.bun/bin"
 fish_add_path "$HOME/.local/bin"
 fish_add_path "$HOME/bin"
+test -f "$HOME/.safe-chain/scripts/init-fish.fish"; and source "$HOME/.safe-chain/scripts/init-fish.fish"
 
 direnv hook fish | source
 zoxide init --cmd=cd fish | source
