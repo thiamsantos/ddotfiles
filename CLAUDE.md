@@ -16,6 +16,7 @@ After you change which files a package exposes, run `stow` again for that packag
 |---|---|
 | `git/` | `$HOME` (`~/.gitconfig`, `~/.globalgitignore`) |
 | `aerospace/` | `$HOME` |
+| `bash/` | `$HOME` (`~/.bashrc`) |
 | `fish/` | `$HOME/.config/fish` |
 | `ghostty/` | `$HOME/.config/ghostty` |
 | `ssh/` | `$HOME/.ssh` |
@@ -26,6 +27,7 @@ After you change which files a package exposes, run `stow` again for that packag
 
 ## Rules for changes
 
+- **Keep `bash/.bashrc` in sync with `fish/config.fish` for what agents need.** Claude Code runs agent commands in bash, not fish. When you add a PATH entry or an env var that agent commands use, add it to both files. Interactive-only setup (prompt, abbreviations, key bindings, zoxide) stays in fish.
 - **Install packages and apps with Homebrew.** You must add each new CLI tool, font, or app to `Brewfile`. Do not install it manually. `brew bundle` installs everything in the file.
 - **Put language and tool versions in `mise/config.toml`.** Put machine-local tools in the gitignored `~/.config/mise/config.local.toml` overlay. You must not put them in the tracked config.
 - **You must not run `mise use --global`** while `~/.config/mise/config.toml` is a Stow symlink. mise writes to the target file and adds the tool to the tracked `mise/config.toml`. Pin the version in `config.local.toml` instead.

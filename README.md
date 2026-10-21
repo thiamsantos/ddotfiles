@@ -6,6 +6,7 @@ Personal macOS development environment, managed with [GNU Stow](https://www.gnu.
 
 **Shell & terminal**
 - [Fish](https://fishshell.com/) shell — prompt, abbreviations, functions, history search (`fish/`)
+- Bash config for Claude Code agent commands: PATH, mise shims, safe-chain (`bash/`)
 - [Ghostty](https://ghostty.org/) terminal — Dracula, SF Mono (`ghostty/`)
 - [herdr](https://herdr.dev/) agent multiplexer (`herdr/`)
 

@@ -38,7 +38,7 @@ brew bundle
 [ -f fish/conf.d/r.local.fish ] || cp fish/conf.d/r.local.fish.example fish/conf.d/r.local.fish
 [ -f fish/conf.d/aws.local.fish ] || cp fish/conf.d/aws.local.fish.example fish/conf.d/aws.local.fish
 
-stow --verbose --target=$HOME git aerospace
+stow --verbose --target=$HOME git aerospace bash
 stow --verbose --target="$HOME/.config/fish" fish
 stow --verbose --target="$HOME/.config/ghostty" ghostty
 stow --verbose --target="$HOME/.ssh" ssh
