@@ -2,6 +2,8 @@ set -gx EDITOR nvim
 set -gx SSH_AUTH_SOCK "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 
 set -gx CLAUDE_CODE_REMOTE_SEND_KEEPALIVES true
+# Claude Code can't use fish and falls back to zsh, whose nomatch/EQUALS defaults break the bash agents write.
+set -gx CLAUDE_CODE_SHELL /opt/homebrew/bin/bash
 set -gx BUN_CONFIG_HTTP_IDLE_TIMEOUT 300
 set -gx BUN_CONFIG_HTTP_RETRY_COUNT 3
 set -gx NODE_OPTIONS "--dns-result-order=ipv4first"
