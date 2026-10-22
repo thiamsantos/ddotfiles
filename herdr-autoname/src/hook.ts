@@ -2,7 +2,7 @@
 import { repoToken } from "./repo";
 import { displayProcs, type PaneProc } from "./procs";
 import { tabLabel } from "./tabname";
-import { agentLabel, workspaceLabel, agentSlug, hyphenate } from "./taskname";
+import { agentLabel, agentSlug, hyphenate } from "./taskname";
 import { readBranch } from "./branch";
 import { snapshot, paneProcs, renameTab, renameAgent, renameWorkspace, type Snapshot } from "./herdr";
 import { readEntry, writeEntry, shouldRename } from "./state";
@@ -123,9 +123,8 @@ async function renameTaskEntities(snap: Snapshot, paneId: string): Promise<void>
   const stale = words === "";
   const useWords = words || prevAgent?.lastGoodWords || "";
   // Both entities' generated words are hyphenated (e.g. "au jsfopts" ->
-  // "au-jsfopts"); the " - " prefix separator and the stale " …" marker are
-  // NOT part of the hyphenated words, so they're applied by agentLabel/
-  // workspaceLabel around the already-hyphenated string, not folded into it.
+  // "au-jsfopts"); the stale " …" marker is applied by agentLabel around the
+  // already-hyphenated string, not folded into it.
   const hyphenated = hyphenate(useWords);
 
   // herdr agent rename ALSO requires a lowercase-start [a-z0-9_-]{1,32} name
@@ -148,13 +147,10 @@ async function renameTaskEntities(snap: Snapshot, paneId: string): Promise<void>
   const wsDecision = shouldRename(prevWs, branch, title, ws.label ?? "");
   if (!wsDecision.act) return;
 
-  // A workspace label must not accumulate its own prefix across renames.
-  // Splitting on " - " still correctly isolates "work-1" even though the
-  // words themselves now contain hyphens, because the prefix separator is
-  // " - " (space-hyphen-space) while hyphenated words never contain a space —
-  // e.g. "work-1 - au-jsfopts".split(" - ") -> ["work-1", "au-jsfopts"].
-  const base = (ws.label ?? "").split(" - ")[0].replace(/\s*…$/, "");
-  const wLabel = workspaceLabel(base, hyphenated, stale);
+  // A stale workspace with no prior words keeps its current name rather than
+  // becoming a bare "…".
+  if (!hyphenated) return;
+  const wLabel = agentLabel(hyphenated, stale);
   await renameWorkspace(ws.workspace_id, wLabel);
   if (!stale) {
     writeEntry(ws.workspace_id, { branch, title, applied: wLabel, lastGoodWords: useWords });

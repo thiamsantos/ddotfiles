@@ -53,8 +53,8 @@ test("nameAndApply is a thin async delegation with the documented signature", ()
 });
 
 test("CLI entrypoint prints the words and exits 0 on success", async () => {
-  // Fixture deliberately still emits 3 words ("fake three words") to prove the
-  // end-to-end path truncates to WORD_COUNT (2) rather than trusting the model's
+  // Fixture deliberately emits 4 words ("fake four word reply") to prove the
+  // end-to-end path truncates to WORD_COUNT (3) rather than trusting the model's
   // arity — this is the new regression risk introduced by the word-count change.
   const fixtureDir = `${import.meta.dir}/fixtures/claude-ok`;
   const env = { ...process.env, PATH: `${fixtureDir}:${process.env.PATH}` };
@@ -65,7 +65,7 @@ test("CLI entrypoint prints the words and exits 0 on success", async () => {
   const out = await new Response(proc.stdout).text();
   const code = await proc.exited;
   expect(code).toBe(0);
-  expect(out.trim()).toBe("fake three");
+  expect(out.trim()).toBe("fake four word");
 });
 
 test("CLI entrypoint exits 1 when generation yields nothing", async () => {

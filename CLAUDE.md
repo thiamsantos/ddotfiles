@@ -64,7 +64,7 @@ Skills are in `claude/skills/<name>/`. `claude/install-skills.sh` **copies** the
 
 `herdr-autoname/` is a herdr plugin. It is TypeScript on Bun and has no build step. `herdr-autoname/install.sh` links it, and `setup.sh` runs that script after the skills install.
 
-The plugin renames tabs to `[N] <repo> <procs>` immediately. This rename uses no LLM — only the worktree repo name and the running processes. It also renames agents to a two-word Haiku summary and workspaces to `<label> - <two words>`.
+The plugin renames tabs to `[N] <repo> <procs>` immediately. This rename uses no LLM — only the worktree repo name and the running processes. It also renames agents to a three-word Haiku summary and workspaces to the same three words.
 
 Haiku calls use `claude -p` and take 12 to 28 seconds. They run as a detached background process, so the hook stays fast. The rename lands about 24 seconds later. After a 45-second timeout, the plugin keeps the last good name and adds a `…` marker.
 

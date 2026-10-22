@@ -1,6 +1,6 @@
 // herdr-autoname/test/taskname.test.ts
 import { test, expect } from "bun:test";
-import { parseWords, agentLabel, workspaceLabel, agentSlug, hyphenate } from "../src/taskname";
+import { parseWords, agentLabel, agentSlug, hyphenate } from "../src/taskname";
 
 test("strips both N: and N. index prefixes", () => {
   expect(parseWords("1: au jsfopts")).toBe("au jsfopts");
@@ -8,10 +8,10 @@ test("strips both N: and N. index prefixes", () => {
   expect(parseWords("au jsfopts")).toBe("au jsfopts");
 });
 
-test("hard-truncates to two words", () => {
-  // Real observed 3+-word replies — never trust the model's arity.
-  expect(parseWords("au jsfopts migrate")).toBe("au jsfopts");
-  expect(parseWords("jsfoptions json schema migration")).toBe("jsfoptions json");
+test("hard-truncates to three words", () => {
+  // Never trust the model's arity.
+  expect(parseWords("au jsfopts migrate")).toBe("au jsfopts migrate");
+  expect(parseWords("jsfoptions json schema migration")).toBe("jsfoptions json schema");
 });
 
 test("lowercases, strips punctuation, collapses whitespace", () => {
@@ -37,18 +37,12 @@ test("agent label is the bare words", () => {
   expect(agentLabel("au jsfopts", false)).toBe("au jsfopts");
 });
 
-test("workspace label prefixes the workspace name", () => {
-  expect(workspaceLabel("work-1", "au jsfopts", false)).toBe("work-1 - au jsfopts");
-});
-
 test("stale marker appends ellipsis, keeping last good words", () => {
   expect(agentLabel("au jsfopts", true)).toBe("au jsfopts …");
-  expect(workspaceLabel("work-1", "au jsfopts", true)).toBe("work-1 - au jsfopts …");
 });
 
 test("stale with no prior words yields a bare marker", () => {
   expect(agentLabel("", true)).toBe("…");
-  expect(workspaceLabel("work-1", "", true)).toBe("work-1 - …");
 });
 
 test("agentSlug turns space-separated words into a valid herdr agent name", () => {
@@ -125,28 +119,6 @@ test("agentSlug is hyphenate plus the agent-only length/leading-letter rules", (
   expect(agentSlug("123 numeric start")).not.toBe(hyphenate("123 numeric start"));
 });
 
-test("workspace label joins hyphenated words after the work-N - prefix", () => {
-  expect(workspaceLabel("work-1", hyphenate("au jsfopts"), false)).toBe("work-1 - au-jsfopts");
-  expect(workspaceLabel("work-3", hyphenate("nl jsfopts"), false)).toBe("work-3 - nl-jsfopts");
-});
-
-test("workspace label stale marker is hyphenated words + space + bare ellipsis", () => {
-  // The " …" marker is applied by agentLabel AROUND the already-hyphenated
-  // words, so it is never itself hyphenated in.
-  expect(workspaceLabel("work-1", hyphenate("au jsfopts"), true)).toBe("work-1 - au-jsfopts …");
-});
-
-test("renaming a workspace twice cannot accumulate prefixes, even with hyphenated words", () => {
-  // Main regression risk: hyphenated words must not break the caller's
-  // ws.label.split(" - ")[0] prefix-rebuild in src/hook.ts.
-  const first = workspaceLabel("work-1", hyphenate("au jsfopts"), false);
-  expect(first).toBe("work-1 - au-jsfopts");
-
-  const base = first.split(" - ")[0].replace(/\s*…$/, "");
-  expect(base).toBe("work-1");
-
-  const second = workspaceLabel(base, hyphenate("nl jsfopts"), false);
-  expect(second).toBe("work-1 - nl-jsfopts");
-  expect((second.match(/ - /g) || []).length).toBe(1);
-  expect(second).not.toContain("au-jsfopts");
+test("stale marker is hyphenated words + space + bare ellipsis", () => {
+  expect(agentLabel(hyphenate("au jsfopts"), true)).toBe("au-jsfopts …");
 });

@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { isInformative } from "./branch";
 import { parseWords } from "./taskname";
 
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = "claude-haiku-5-5";
 export const TIMEOUT_MS = 45000;
 const LOG_CAP = 200;
 const SYSTEM_PROMPT = "You are a naming utility. Follow the users rules exactly and output nothing else.";
@@ -16,7 +16,7 @@ export function buildPrompt(branch: string, title: string): string {
   ].filter(Boolean).join(" ");
 
   return [
-    "Name this work item in AT MOST two lowercase words for a narrow terminal sidebar.",
+    "Name this work item in AT MOST three lowercase words for a narrow terminal sidebar.",
     "",
     "Rules:",
     "- Abbreviate to save space. Use ISO country codes (australia->au, netherlands->nl, philippines->ph) and common dev abbreviations (production->prod, description->desc, configuration->config, options->opts, repository->repo).",
@@ -24,8 +24,8 @@ export function buildPrompt(branch: string, title: string): string {
     "- Keep recognizable project/system names intact rather than clipping them to fragments. Prefer exjsflow over exjs.",
     "- The branch is authoritative for WHAT the work is. The title reflects the CURRENT step.",
     "- Fix typos in the branch (philipines -> ph).",
-    "- With only two words available, the single most distinguishing token (country, subsystem, ticket topic) matters more than ever — always keep it, and drop generic verbs like migrate/update/review before you'd drop it. That distinguishing token is what keeps otherwise-similar work (e.g. au jsfopts vs nl jsfopts vs ph jsfopts) tellable apart.",
-    "- Output ONLY the two words. No punctuation, no explanation, no numbering.",
+    "- With only three words available, the single most distinguishing token (country, subsystem, ticket topic) matters more than ever — always keep it, and drop generic verbs like migrate/update/review before you'd drop it. That distinguishing token is what keeps otherwise-similar work (e.g. au jsfopts vs nl jsfopts vs ph jsfopts) tellable apart.",
+    "- Output ONLY the three words. No punctuation, no explanation, no numbering.",
     "",
     signals,
   ].join("\n");

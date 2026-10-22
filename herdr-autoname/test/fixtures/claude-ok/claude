@@ -1,3 +1,3 @@
 #!/bin/sh
-echo "fake three words"
+echo "fake four word reply"
 exit 0

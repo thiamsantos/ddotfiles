@@ -1,6 +1,6 @@
 // herdr-autoname/src/taskname.ts
 export const STALE = "…";
-export const WORD_COUNT = 2;
+export const WORD_COUNT = 3;
 
 export function parseWords(reply: string): string {
   const line = (reply ?? "")
@@ -21,11 +21,6 @@ export function parseWords(reply: string): string {
 export function agentLabel(words: string, stale: boolean): string {
   if (!stale) return words;
   return words ? `${words} ${STALE}` : STALE;
-}
-
-export function workspaceLabel(wsLabel: string, words: string, stale: boolean): string {
-  const tail = agentLabel(words, stale);
-  return `${wsLabel} - ${tail}`;
 }
 
 // Shared word-hyphenating core, used by both entities' names. Lowercases,
