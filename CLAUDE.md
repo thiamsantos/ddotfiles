@@ -50,7 +50,7 @@ To change one of these files, edit the real gitignored file. When you change its
 
 ## Claude skills
 
-Skills are in `claude/skills/<name>/`. `claude/install-skills.sh` **copies** them to `~/.claude/skills/`. It does not stow or symlink them. `setup.sh` runs the script after the stow step. To apply a change, edit the skill in the repo and run the script again. The script also deletes the retired skills `tuicr`, `review-plan-tuicr`, `review-queue`, and `herdr-review`.
+Skills are in `claude/skills/<name>/`. `claude/install-skills.sh` **copies** them to `~/.claude/skills/`. It does not stow or symlink them. `setup.sh` runs the script after the stow step. To apply a change, edit the skill in the repo and run the script again. The script also deletes the retired skills `tuicr`, `review-plan-tuicr`, `review-queue`, `herdr-review`, and `mr-description`.
 
 For code and plan review, use [crit](https://crit.md/). Homebrew installs the binary. The `crit@crit` Claude Code plugin provides the `crit` and `crit-cli` skills.
 
