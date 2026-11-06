@@ -10,6 +10,9 @@ export NODE_OPTIONS="--dns-result-order=ipv4first"
 
 # Shims, not the PATH hook: the hook only runs on a prompt, which agent shells
 # never show, so tool versions would not follow the project directory.
+# Claude Code inherits PATH from a fish terminal where Homebrew's mise ran a full
+# activate, so drop those install dirs or they'd sit ahead of the shims.
+PATH=$(printf %s "$PATH" | tr ":" "\n" | grep -v "/mise/installs/" | paste -sd: -)
 eval "$(mise activate bash --shims)"
 
 [ -f "$HOME/.safe-chain/scripts/init-posix.sh" ] && source "$HOME/.safe-chain/scripts/init-posix.sh"
