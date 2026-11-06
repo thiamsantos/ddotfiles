@@ -9,8 +9,8 @@ DEST_DIR="$HOME/.claude/skills"
 
 mkdir -p "$DEST_DIR"
 
-# Remove skills retired by the herdr-review migration.
-for retired in tuicr review-plan-tuicr review-queue; do
+# Remove retired skills.
+for retired in tuicr review-plan-tuicr review-queue herdr-review; do
     if [ -e "$DEST_DIR/$retired" ]; then
         rm -rf "${DEST_DIR:?}/$retired"
         echo "removed retired skill: $retired"

@@ -50,15 +50,9 @@ To change one of these files, edit the real gitignored file. When you change its
 
 ## Claude skills
 
-Skills are in `claude/skills/<name>/`. `claude/install-skills.sh` **copies** them to `~/.claude/skills/`. It does not stow or symlink them. `setup.sh` runs the script after the stow step. To apply a change, edit the skill in the repo and run the script again. The script also deletes the retired skills `tuicr` and `review-plan-tuicr`.
+Skills are in `claude/skills/<name>/`. `claude/install-skills.sh` **copies** them to `~/.claude/skills/`. It does not stow or symlink them. `setup.sh` runs the script after the stow step. To apply a change, edit the skill in the repo and run the script again. The script also deletes the retired skills `tuicr`, `review-plan-tuicr`, `review-queue`, and `herdr-review`.
 
-- `herdr-review` — opens a tuicr review in a half-width herdr pane for three
-  flows: a superpowers plan or spec, the current-branch diff, and a GitLab MR.
-  It waits for the human, then reads their comments from the session JSON path.
-  It requires an active herdr session. The pane mechanics live in the bundled
-  launcher `references/herdr-tuicr-review.py`; the skill runs it by absolute
-  path (`~/.claude/skills/herdr-review/references/herdr-tuicr-review.py`), not
-  from `PATH`.
+For code and plan review, use [crit](https://crit.md/). Homebrew installs the binary. The `crit@crit` Claude Code plugin provides the `crit` and `crit-cli` skills.
 
 ## herdr plugins
 
