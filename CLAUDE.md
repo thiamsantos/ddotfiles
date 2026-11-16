@@ -56,14 +56,6 @@ For code and plan review, use [crit](https://crit.md/). Homebrew installs the bi
 
 ## herdr plugins
 
-`herdr-autoname/` is a herdr plugin. It is TypeScript on Bun and has no build step. `herdr-autoname/install.sh` links it, and `setup.sh` runs that script after the skills install.
-
-The plugin renames tabs to `[N] <repo> <procs>` immediately. This rename uses no LLM — only the worktree repo name and the running processes. It also renames agents to a three-word Haiku summary and workspaces to the same three words.
-
-Haiku calls use `claude -p` and take 12 to 28 seconds. They run as a detached background process, so the hook stays fast. The rename lands about 24 seconds later. After a 45-second timeout, the plugin keeps the last good name and adds a `…` marker.
-
-Branch detection is read-only. The plugin never rewrites git branches. The state and the Haiku error log are in `~/.local/state/herdr/plugins/thiamsantos.autoname/`. After you edit the plugin, you must run `bun test` in the plugin directory.
-
 `herdr-resurrect/` holds only an `install.sh`. The plugin is third-party ([ntindle/herdr-resurrect](https://github.com/ntindle/herdr-resurrect)). `setup.sh` installs it from the marketplace, and herdr pins it to the resolved commit. The plugin is tmux-resurrect for herdr: it snapshots workspaces, tabs, panes, working directories, running programs, and agents, then restores them after a crash or a reboot.
 
 The script is deliberately **not** in the `herdr/` stow package. Stow would symlink it into `~/.config/herdr/`, and it is not config.

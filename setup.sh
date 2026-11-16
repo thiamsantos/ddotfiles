@@ -50,9 +50,6 @@ stow --verbose --target="$HOME/.config/herdr" herdr
 # Deploy Claude skills (copy into ~/.claude/skills; not stowed).
 ./claude/install-skills.sh
 
-# Link the herdr autoname plugin (requires a running herdr server).
-./herdr-autoname/install.sh
-
 # Install the third-party herdr-resurrect plugin and seed its config.
 ./herdr-resurrect/install.sh
 

@@ -1,3 +1,0 @@
-#!/bin/sh
-echo "fake four word reply"
-exit 0
