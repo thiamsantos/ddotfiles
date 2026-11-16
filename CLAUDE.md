@@ -56,6 +56,8 @@ For code and plan review, use [crit](https://crit.md/). Homebrew installs the bi
 
 ## herdr plugins
 
+`herdr-tabnum/` is a local herdr plugin. It is TypeScript on Bun and has no build step. `herdr-tabnum/install.sh` links it, and `setup.sh` runs that script. On startup and on each `tab.created`, `tab.closed`, `tab.moved`, and `tab.renamed` event, the plugin sets each tab's `[N]` to its 1-based position in its workspace. It keeps the rest of the label. It replaces herdr's default numeric label with a bare `[N]`. It does not use `tab.number`, because that number has gaps after you close tabs. After you edit the plugin, you must run `bun test` in the plugin directory.
+
 `herdr-resurrect/` holds only an `install.sh`. The plugin is third-party ([ntindle/herdr-resurrect](https://github.com/ntindle/herdr-resurrect)). `setup.sh` installs it from the marketplace, and herdr pins it to the resolved commit. The plugin is tmux-resurrect for herdr: it snapshots workspaces, tabs, panes, working directories, running programs, and agents, then restores them after a crash or a reboot.
 
 The script is deliberately **not** in the `herdr/` stow package. Stow would symlink it into `~/.config/herdr/`, and it is not config.

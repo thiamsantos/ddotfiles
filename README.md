@@ -23,6 +23,7 @@ Personal macOS development environment, managed with [GNU Stow](https://www.gnu.
 - [crit](https://crit.md/) for reviewing agent plans and diffs, with its Claude Code plugin
 
 **herdr plugins**
+- `herdr-tabnum/` — prefixes each tab label with its `[N]` position in the workspace and keeps your own label text (`herdr-tabnum/install.sh`)
 - `herdr-resurrect/` — installer only; the plugin is third-party ([ntindle/herdr-resurrect](https://github.com/ntindle/herdr-resurrect)). It snapshots workspaces, tabs, panes, and agents, then restores them after a crash or reboot (`herdr-resurrect/install.sh`)
 
 **Languages via mise**: Elixir, Erlang, Node, Yarn, Python, Lua, Rust, Go, Bun, plus `kubectl`, `pandoc`, and the [dexter](https://github.com/remoteoss/dexter) Elixir LSP.
@@ -41,7 +42,7 @@ cd ~/dev/dotfiles
 ./setup.sh
 ```
 
-`setup.sh` installs Homebrew and the `Brewfile`, seeds machine-local config (below), symlinks every package with Stow, deploys Claude skills into `~/.claude/skills/`, installs the two herdr plugins, sets Fish as the default shell, and runs `mise install`. Restart the terminal afterward.
+`setup.sh` installs Homebrew and the `Brewfile`, seeds machine-local config (below), symlinks every package with Stow, deploys Claude skills into `~/.claude/skills/`, installs the three herdr plugins, sets Fish as the default shell, and runs `mise install`. Restart the terminal afterward.
 
 To re-link a single package without the full script:
 
@@ -72,7 +73,7 @@ A few things `setup.sh` does not fully automate:
 - **Fonts** — installed as casks, but the terminal/editor must be restarted to pick them up.
 - **Claude skills** — `setup.sh` copies `claude/skills/*` into `~/.claude/skills/`. After editing a skill in the repo, re-run `claude/install-skills.sh` to apply (it copies, so edits are not live until you do).
 - **crit** — Homebrew installs the binary. Install the Claude Code plugin once: `claude plugin marketplace add tomasz-tomczyk/crit && claude plugin install crit@crit`.
-- **herdr plugins** — both installers skip silently when the `herdr` binary is missing (and `herdr-resurrect` also needs `node`), so re-run `herdr-resurrect/install.sh` and `herdr-caffeinate/install.sh` after Homebrew has installed herdr. `herdr-resurrect`'s config (`settings.json`, `allowlist.txt`) is seeded once and never overwritten.
+- **herdr plugins** — all installers skip silently when the `herdr` binary is missing (and `herdr-resurrect` also needs `node`), so re-run `herdr-tabnum/install.sh`, `herdr-resurrect/install.sh`, and `herdr-caffeinate/install.sh` after Homebrew has installed herdr. `herdr-resurrect`'s config (`settings.json`, `allowlist.txt`) is seeded once and never overwritten.
 
 ## Maintenance
 

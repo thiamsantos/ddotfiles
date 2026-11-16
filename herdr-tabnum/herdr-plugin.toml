@@ -1,0 +1,25 @@
+id = "thiamsantos.tabnum"
+name = "Tab numbers"
+version = "0.1.0"
+description = "Prefix each tab label with its [N] position in the workspace"
+min_herdr_version = "0.9.1"
+platforms = ["macos", "linux"]
+
+[[startup]]
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "tab.created"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "tab.closed"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "tab.moved"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "tab.renamed"
+command = ["bun", "run", "src/hook.ts"]
