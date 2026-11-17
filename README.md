@@ -24,6 +24,7 @@ Personal macOS development environment, managed with [GNU Stow](https://www.gnu.
 
 **herdr plugins**
 - `herdr-tabnum/` — prefixes each tab label with its `[N]` position in the workspace and keeps your own label text (`herdr-tabnum/install.sh`)
+- `herdr-autoname/` — renames tabs and agents to a three-word Haiku summary of the branch and Claude session title, and keeps the `[N]` tag (`herdr-autoname/install.sh`)
 - `herdr-resurrect/` — installer only; the plugin is third-party ([ntindle/herdr-resurrect](https://github.com/ntindle/herdr-resurrect)). It snapshots workspaces, tabs, panes, and agents, then restores them after a crash or reboot (`herdr-resurrect/install.sh`)
 
 **Languages via mise**: Elixir, Erlang, Node, Yarn, Python, Lua, Rust, Go, Bun, plus `kubectl`, `pandoc`, and the [dexter](https://github.com/remoteoss/dexter) Elixir LSP.
@@ -73,7 +74,7 @@ A few things `setup.sh` does not fully automate:
 - **Fonts** — installed as casks, but the terminal/editor must be restarted to pick them up.
 - **Claude skills** — `setup.sh` copies `claude/skills/*` into `~/.claude/skills/`. After editing a skill in the repo, re-run `claude/install-skills.sh` to apply (it copies, so edits are not live until you do).
 - **crit** — Homebrew installs the binary. Install the Claude Code plugin once: `claude plugin marketplace add tomasz-tomczyk/crit && claude plugin install crit@crit`.
-- **herdr plugins** — all installers skip silently when the `herdr` binary is missing (and `herdr-resurrect` also needs `node`), so re-run `herdr-tabnum/install.sh`, `herdr-resurrect/install.sh`, and `herdr-caffeinate/install.sh` after Homebrew has installed herdr. `herdr-resurrect`'s config (`settings.json`, `allowlist.txt`) is seeded once and never overwritten.
+- **herdr plugins** — all installers skip silently when the `herdr` binary is missing (and `herdr-resurrect` also needs `node`), so re-run `herdr-tabnum/install.sh`, `herdr-autoname/install.sh`, `herdr-resurrect/install.sh`, and `herdr-caffeinate/install.sh` after Homebrew has installed herdr. `herdr-resurrect`'s config (`settings.json`, `allowlist.txt`) is seeded once and never overwritten.
 
 ## Maintenance
 

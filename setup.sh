@@ -53,6 +53,9 @@ stow --verbose --target="$HOME/.config/herdr" herdr
 # Link the herdr tab-number plugin.
 ./herdr-tabnum/install.sh
 
+# Link the herdr autoname plugin.
+./herdr-autoname/install.sh
+
 # Install the third-party herdr-resurrect plugin and seed its config.
 ./herdr-resurrect/install.sh
 

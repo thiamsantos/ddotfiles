@@ -58,6 +58,10 @@ For code and plan review, use [crit](https://crit.md/). Homebrew installs the bi
 
 `herdr-tabnum/` is a local herdr plugin. It is TypeScript on Bun and has no build step. `herdr-tabnum/install.sh` links it, and `setup.sh` runs that script. On startup and on each `tab.created`, `tab.closed`, `tab.moved`, and `tab.renamed` event, the plugin sets each tab's `[N]` to its 1-based position in its workspace. It keeps the rest of the label. It replaces herdr's default numeric label with a bare `[N]`. It does not use `tab.number`, because that number has gaps after you close tabs. After you edit the plugin, you must run `bun test` in the plugin directory.
 
+`herdr-autoname/` is a local herdr plugin. It is TypeScript on Bun and has no build step. `herdr-autoname/install.sh` links it, and `setup.sh` runs that script. On agent events, it renames the agent and the agent's tab to a three-word Haiku summary of the git branch and the Claude session title. It keeps the tab's `[N]` tag, which `herdr-tabnum` owns. It does not rename workspaces.
+
+The Haiku call uses `claude -p` and takes 12 to 28 seconds. It runs in a detached process, so the hook stays fast. After a 45-second timeout, the plugin keeps the last good name and adds a `…` marker. Manual renames stay until the branch or the title changes. The state and the Haiku error log are in `~/.local/state/herdr/plugins/thiamsantos.autoname/`. After you edit the plugin, you must run `bun test` in the plugin directory.
+
 `herdr-resurrect/` holds only an `install.sh`. The plugin is third-party ([ntindle/herdr-resurrect](https://github.com/ntindle/herdr-resurrect)). `setup.sh` installs it from the marketplace, and herdr pins it to the resolved commit. The plugin is tmux-resurrect for herdr: it snapshots workspaces, tabs, panes, working directories, running programs, and agents, then restores them after a crash or a reboot.
 
 The script is deliberately **not** in the `herdr/` stow package. Stow would symlink it into `~/.config/herdr/`, and it is not config.

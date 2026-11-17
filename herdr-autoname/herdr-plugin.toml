@@ -1,0 +1,18 @@
+id = "thiamsantos.autoname"
+name = "Autoname"
+version = "0.2.0"
+description = "Rename tabs and agents to a three-word Haiku summary of the git branch and Claude session title"
+min_herdr_version = "0.9.1"
+platforms = ["macos", "linux"]
+
+[[events]]
+on = "pane.agent_detected"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "pane.agent_status_changed"
+command = ["bun", "run", "src/hook.ts"]
+
+[[events]]
+on = "pane.focused"
+command = ["bun", "run", "src/hook.ts"]
